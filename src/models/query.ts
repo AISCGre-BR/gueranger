@@ -9,4 +9,6 @@ export interface SearchQuery {
   century?: string;
   /** Liturgical feast filter (e.g., 'Corpus Christi') */
   feast?: string;
+  /** Volpiano melodic incipit for melody search */
+  melody?: string;
 }
