@@ -1,13 +1,14 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
 import { normalizeLatinText } from "../normalizer/latin.js";
-import { CantusAdapter } from "../adapters/cantus/cantus-adapter.js";
+import { multiSearch, getActiveAdapters } from "../orchestrator/multi-search.js";
 import { formatResults } from "../utils/format-response.js";
 import type { SearchQuery } from "../models/query.js";
 
 /**
  * Testable handler for the search_chants tool.
- * Normalizes Latin text, searches Cantus Index network, and returns formatted results.
+ * Normalizes Latin text, searches all configured sources in parallel,
+ * deduplicates results, and returns formatted response with source warnings.
  */
 export async function handleSearchChants(params: {
   query: string;
@@ -16,7 +17,7 @@ export async function handleSearchChants(params: {
   feast?: string;
   melody?: string;
 }): Promise<{ content: Array<{ type: "text"; text: string }> }> {
-  const adapter = new CantusAdapter();
+  const adapters = getActiveAdapters();
   const searchQuery: SearchQuery = {
     query: normalizeLatinText(params.query),
     rawQuery: params.query,
@@ -25,23 +26,22 @@ export async function handleSearchChants(params: {
     feast: params.feast,
     melody: params.melody,
   };
-  const results = await adapter.search(searchQuery);
+  const { results, warnings } = await multiSearch(adapters, searchQuery);
 
   if (results.length === 0) {
+    let text = `No manuscripts found for "${params.query}". Try a shorter incipit or different spelling.`;
+    if (warnings.length > 0) {
+      text += "\n\nSource warnings:\n" + warnings.map((w) => `- ${w}`).join("\n");
+    }
     return {
-      content: [
-        {
-          type: "text",
-          text: `No manuscripts found for "${params.query}". Try a shorter incipit or different spelling.`,
-        },
-      ],
+      content: [{ type: "text", text }],
     };
   }
 
-  const formatted = formatResults(results, params.query);
-  const text = adapter.lastRelaxationMessage
-    ? `Note: ${adapter.lastRelaxationMessage}\n\n${formatted}`
-    : formatted;
+  let text = formatResults(results, params.query);
+  if (warnings.length > 0) {
+    text += "\n\nSource warnings:\n" + warnings.map((w) => `- ${w}`).join("\n");
+  }
 
   return {
     content: [{ type: "text", text }],

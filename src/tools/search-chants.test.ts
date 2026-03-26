@@ -1,19 +1,16 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import type { ManuscriptResult } from "../models/manuscript-result.js";
+import type { MultiSearchResult } from "../orchestrator/multi-search.js";
+import type { SearchQuery } from "../models/query.js";
 
-const mockSearch = vi.fn();
-let mockLastRelaxationMessage: string | null = null;
+const mockMultiSearch = vi.fn<(...args: unknown[]) => Promise<MultiSearchResult>>();
+const mockGetActiveAdapters = vi.fn().mockReturnValue([]);
 
-// Mock the CantusAdapter module with a proper class
-vi.mock("../adapters/cantus/cantus-adapter.js", () => {
+// Mock the orchestrator module
+vi.mock("../orchestrator/multi-search.js", () => {
   return {
-    CantusAdapter: class MockCantusAdapter {
-      name = "Cantus Index Network";
-      get lastRelaxationMessage() {
-        return mockLastRelaxationMessage;
-      }
-      search = mockSearch;
-    },
+    multiSearch: (...args: unknown[]) => mockMultiSearch(...(args as [])),
+    getActiveAdapters: () => mockGetActiveAdapters(),
   };
 });
 
@@ -37,71 +34,98 @@ function makeMockResult(overrides: Partial<ManuscriptResult> = {}): ManuscriptRe
   };
 }
 
+function makeSearchResult(
+  results: ManuscriptResult[],
+  warnings: string[] = [],
+): MultiSearchResult {
+  return {
+    results,
+    warnings,
+    sourcesQueried: ["Cantus Index Network", "DIAMM", "RISM Online"],
+    sourcesSucceeded: ["Cantus Index Network"],
+    sourcesFailed: [],
+  };
+}
+
 describe("handleSearchChants", () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    mockSearch.mockReset();
-    mockLastRelaxationMessage = null;
+    mockMultiSearch.mockReset();
   });
 
-  it("text search calls CantusAdapter with normalized query", async () => {
-    mockSearch.mockResolvedValue([makeMockResult()]);
+  it("calls multiSearch with normalized query and all adapters", async () => {
+    mockMultiSearch.mockResolvedValue(makeSearchResult([makeMockResult()]));
 
     const result = await handleSearchChants({ query: "Pange lingua" });
 
-    expect(mockSearch).toHaveBeenCalledTimes(1);
-    const callArg = mockSearch.mock.calls[0][0];
-    expect(callArg.rawQuery).toBe("Pange lingua");
-    expect(callArg.query).toBe("pange lingua"); // normalized
+    expect(mockMultiSearch).toHaveBeenCalledTimes(1);
+    const callArgs = mockMultiSearch.mock.calls[0];
+    const query = callArgs[1] as SearchQuery;
+    expect(query.rawQuery).toBe("Pange lingua");
+    expect(query.query).toBe("pange lingua"); // normalized
     expect(result.content[0].text).toContain("Pange lingua gloriosi");
   });
 
-  it("melody search passes melody field to adapter", async () => {
-    mockSearch.mockResolvedValue([makeMockResult({ incipit: "Veni creator spiritus" })]);
-
-    await handleSearchChants({ query: "", melody: "1---h--g--f" });
-
-    const callArg = mockSearch.mock.calls[0][0];
-    expect(callArg.melody).toBe("1---h--g--f");
-  });
-
-  it("displays relaxation message when adapter sets it", async () => {
-    mockSearch.mockImplementation(() => {
-      mockLastRelaxationMessage = "Relaxed century filter -- no results matched the requested century.";
-      return Promise.resolve([makeMockResult()]);
-    });
-
-    const result = await handleSearchChants({ query: "test", genre: "hymn", century: "12th" });
-
-    expect(result.content[0].text).toContain("Note: Relaxed century filter");
-  });
-
-  it("returns 'No manuscripts found' when adapter returns empty array", async () => {
-    mockSearch.mockResolvedValue([]);
-
-    const result = await handleSearchChants({ query: "nonexistent chant" });
-
-    expect(result.content[0].text).toContain("No manuscripts found");
-  });
-
-  it("passes genre, century, and feast filters to adapter", async () => {
-    mockSearch.mockResolvedValue([makeMockResult()]);
+  it("passes genre, century, feast, and melody filters to multiSearch", async () => {
+    mockMultiSearch.mockResolvedValue(makeSearchResult([makeMockResult()]));
 
     await handleSearchChants({
       query: "Pange lingua",
       genre: "hymn",
       century: "12th",
       feast: "Corpus Christi",
+      melody: "1---h--g--f",
     });
 
-    const callArg = mockSearch.mock.calls[0][0];
-    expect(callArg.genre).toBe("hymn");
-    expect(callArg.century).toBe("12th");
-    expect(callArg.feast).toBe("Corpus Christi");
+    const query = mockMultiSearch.mock.calls[0][1] as SearchQuery;
+    expect(query.genre).toBe("hymn");
+    expect(query.century).toBe("12th");
+    expect(query.feast).toBe("Corpus Christi");
+    expect(query.melody).toBe("1---h--g--f");
+  });
+
+  it("returns 'No manuscripts found' when multiSearch returns empty results", async () => {
+    mockMultiSearch.mockResolvedValue(makeSearchResult([]));
+
+    const result = await handleSearchChants({ query: "nonexistent chant" });
+
+    expect(result.content[0].text).toContain("No manuscripts found");
+  });
+
+  it("includes source warnings in response when present", async () => {
+    mockMultiSearch.mockResolvedValue(
+      makeSearchResult(
+        [makeMockResult()],
+        ["DIAMM results unavailable \u2014 credentials not configured"],
+      ),
+    );
+
+    const result = await handleSearchChants({ query: "Pange lingua" });
+    const text = result.content[0].text;
+
+    expect(text).toContain("Source warnings:");
+    expect(text).toContain("DIAMM results unavailable");
+  });
+
+  it("includes source warnings even when no results found", async () => {
+    mockMultiSearch.mockResolvedValue({
+      results: [],
+      warnings: ["RISM Online: Timeout after 15000ms"],
+      sourcesQueried: ["Cantus", "RISM"],
+      sourcesSucceeded: ["Cantus"],
+      sourcesFailed: ["RISM"],
+    });
+
+    const result = await handleSearchChants({ query: "test" });
+    const text = result.content[0].text;
+
+    expect(text).toContain("No manuscripts found");
+    expect(text).toContain("Source warnings:");
+    expect(text).toContain("RISM Online: Timeout");
   });
 
   it("results text contains structured format fields", async () => {
-    mockSearch.mockResolvedValue([makeMockResult()]);
+    mockMultiSearch.mockResolvedValue(makeSearchResult([makeMockResult()]));
 
     const result = await handleSearchChants({ query: "Pange lingua" });
     const text = result.content[0].text;

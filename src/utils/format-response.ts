@@ -22,9 +22,17 @@ export function formatResults(results: ManuscriptResult[], query: string): strin
     }
   }
 
+  // Count unique sources (split merged sourceDatabase fields like "Cantus, DIAMM")
+  const sources = new Set<string>();
+  for (const result of results) {
+    for (const src of result.sourceDatabase.split(", ")) {
+      sources.add(src);
+    }
+  }
+
   const lines: string[] = [];
   lines.push(
-    `Found ${results.length} result(s) for "${query}" across ${grouped.size} manuscript(s):`,
+    `Found ${results.length} result(s) for "${query}" across ${grouped.size} manuscript(s) from ${sources.size} source(s):`,
   );
 
   for (const [siglum, entries] of grouped) {
