@@ -93,7 +93,7 @@ describe("CantusAdapter", () => {
       mockSearchByText.mockResolvedValue([
         { cid: "001000", fulltext: "Test", genre: "A" },
       ]);
-      const chants: Record<string, unknown> = {};
+      const chants: Record<string, ReturnType<typeof makeChant>> = {};
       for (let i = 0; i < 150; i++) {
         chants[String(i)] = makeChant({ siglum: `MS-${i}` });
       }

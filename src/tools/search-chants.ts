@@ -1,29 +1,32 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
 import { normalizeLatinText } from "../normalizer/latin.js";
-import { MockAdapter } from "../adapters/mock/mock-adapter.js";
+import { CantusAdapter } from "../adapters/cantus/cantus-adapter.js";
 import { formatResults } from "../utils/format-response.js";
 import type { SearchQuery } from "../models/query.js";
 
 /**
  * Testable handler for the search_chants tool.
- * Normalizes Latin text, searches mock manuscripts, and returns formatted results.
+ * Normalizes Latin text, searches Cantus Index network, and returns formatted results.
  */
 export async function handleSearchChants(params: {
   query: string;
   genre?: string;
   century?: string;
   feast?: string;
+  melody?: string;
 }): Promise<{ content: Array<{ type: "text"; text: string }> }> {
-  const adapter = new MockAdapter();
+  const adapter = new CantusAdapter();
   const searchQuery: SearchQuery = {
     query: normalizeLatinText(params.query),
     rawQuery: params.query,
     genre: params.genre,
     century: params.century,
     feast: params.feast,
+    melody: params.melody,
   };
   const results = await adapter.search(searchQuery);
+
   if (results.length === 0) {
     return {
       content: [
@@ -34,8 +37,14 @@ export async function handleSearchChants(params: {
       ],
     };
   }
+
+  const formatted = formatResults(results, params.query);
+  const text = adapter.lastRelaxationMessage
+    ? `Note: ${adapter.lastRelaxationMessage}\n\n${formatted}`
+    : formatted;
+
   return {
-    content: [{ type: "text", text: formatResults(results, params.query) }],
+    content: [{ type: "text", text }],
   };
 }
 
@@ -70,6 +79,12 @@ export function registerSearchChantsTool(server: McpServer): void {
         .optional()
         .describe(
           "Liturgical feast filter. Examples: 'Corpus Christi', 'Nativity', 'Easter', 'Pentecost'",
+        ),
+      melody: z
+        .string()
+        .optional()
+        .describe(
+          "Volpiano melodic incipit for melody-based search. Provide the Volpiano string as-is (e.g., '1---h--ij---h--g---k'). When provided, searches CantusDB by melody instead of text.",
         ),
     },
   }, async (params) => {
