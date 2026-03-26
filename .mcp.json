@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "gueranger": {
+      "type": "stdio",
+      "command": "node",
+      "args": ["./build/server.js"]
+    }
+  }
+}
