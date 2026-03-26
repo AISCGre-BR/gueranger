@@ -29,9 +29,9 @@ export type CantusIndexChant = z.infer<typeof CantusIndexChantSchema>;
 
 /** Full response from /json-cid/{CantusID} */
 export const CantusIndexCidResponseSchema = z.object({
-  info: z.record(z.unknown()),
-  databases: z.record(z.unknown()),
-  chants: z.record(CantusIndexChantSchema),
+  info: z.record(z.string(), z.unknown()),
+  databases: z.record(z.string(), z.unknown()),
+  chants: z.record(z.string(), CantusIndexChantSchema),
 });
 export type CantusIndexCidResponse = z.infer<
   typeof CantusIndexCidResponseSchema
