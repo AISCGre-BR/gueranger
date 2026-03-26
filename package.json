@@ -1,0 +1,26 @@
+{
+  "name": "gueranger",
+  "version": "0.1.0",
+  "type": "module",
+  "bin": {
+    "gueranger": "./build/server.js"
+  },
+  "scripts": {
+    "build": "tsup src/server.ts --format esm --dts",
+    "dev": "tsx src/server.ts",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "inspect": "npx @modelcontextprotocol/inspector node build/server.js"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.28.0",
+    "zod": "^4.3.6"
+  },
+  "devDependencies": {
+    "@types/node": "^25.5.0",
+    "tsup": "^8.5.1",
+    "tsx": "^4.21.0",
+    "typescript": "^6.0.2",
+    "vitest": "^4.1.1"
+  }
+}
