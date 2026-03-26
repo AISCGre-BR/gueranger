@@ -77,8 +77,8 @@ export class CantusAdapter implements SourceAdapter {
     // Flatten all chants into ManuscriptResult[]
     const allResults: ManuscriptResult[] = [];
     for (const { cid, resp, item } of cidResponses) {
-      const info = resp.info as Record<string, string | undefined>;
-      const chants = resp.chants;
+      const info = (resp.info ?? {}) as Record<string, string | undefined>;
+      const chants = resp.chants ?? {};
       for (const key of Object.keys(chants)) {
         allResults.push(
           mapCantusIndexChantToResult(
