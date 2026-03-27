@@ -1,5 +1,18 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
+
+vi.mock("node:fs", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("node:fs")>();
+  return {
+    ...actual,
+    default: { ...actual, existsSync: vi.fn(() => false) },
+    existsSync: vi.fn(() => false),
+  };
+});
+
 import { GuerangerClient } from "./mcp-client";
+import { existsSync } from "node:fs";
+
+const mockedExistsSync = vi.mocked(existsSync);
 
 describe("GuerangerClient.parseResults", () => {
   it("extracts ManuscriptResult[] from MCP response with ---JSON--- marker", () => {
@@ -60,9 +73,12 @@ describe("GuerangerClient.parseResults", () => {
 });
 
 describe("GuerangerClient.resolveServerPath", () => {
-  it("uses gueranger.serverPath setting when provided and file exists", async () => {
-    const fs = await import("node:fs");
-    const existsSyncSpy = vi.spyOn(fs, "existsSync").mockReturnValue(true);
+  beforeEach(() => {
+    mockedExistsSync.mockReset();
+  });
+
+  it("uses gueranger.serverPath setting when provided and file exists", () => {
+    mockedExistsSync.mockReturnValue(true);
 
     const mockContext = {
       extensionPath: "/mock/extension",
@@ -70,16 +86,12 @@ describe("GuerangerClient.resolveServerPath", () => {
     };
 
     const client = new GuerangerClient(mockContext as any);
-    const path = client.resolveServerPath();
-    expect(path).toBe("/custom/path/server.js");
-
-    existsSyncSpy.mockRestore();
+    const resolved = client.resolveServerPath();
+    expect(resolved).toBe("/custom/path/server.js");
   });
 
-  it("falls back to extension path when setting is empty", async () => {
-    const fs = await import("node:fs");
-    const path = await import("node:path");
-    const existsSyncSpy = vi.spyOn(fs, "existsSync").mockImplementation((p) => {
+  it("falls back to extension path when setting is empty", () => {
+    mockedExistsSync.mockImplementation((p) => {
       return String(p).includes("build/server.js");
     });
 
@@ -91,7 +103,17 @@ describe("GuerangerClient.resolveServerPath", () => {
     const client = new GuerangerClient(mockContext as any);
     const resolved = client.resolveServerPath();
     expect(resolved).toContain("build/server.js");
+  });
 
-    existsSyncSpy.mockRestore();
+  it("throws when no server path is found", () => {
+    mockedExistsSync.mockReturnValue(false);
+
+    const mockContext = {
+      extensionPath: "/mock/extension",
+      getConfig: () => "",
+    };
+
+    const client = new GuerangerClient(mockContext as any);
+    expect(() => client.resolveServerPath()).toThrow("Gueranger server not found");
   });
 });
