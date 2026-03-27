@@ -1,5 +1,6 @@
 import * as vscode from "vscode";
 import { GuerangerClient, type ClientContext } from "./mcp-client";
+import { GuerangerPanel } from "./webview/panel";
 
 let client: GuerangerClient | undefined;
 
@@ -24,10 +25,7 @@ export async function activate(context: vscode.ExtensionContext) {
           client = new GuerangerClient(createClientContext(context));
           await client.connect();
         }
-        // GuerangerPanel will be implemented in Plan 02
-        vscode.window.showInformationMessage(
-          "Gueranger panel coming in Plan 02",
-        );
+        GuerangerPanel.createOrShow(context.extensionUri, client);
       } catch (err: unknown) {
         const message =
           err instanceof Error ? err.message : "Unknown error connecting to server";

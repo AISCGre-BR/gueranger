@@ -1,0 +1,158 @@
+/* Gueranger WebView Styles -- uses VSCode CSS custom properties for theme matching */
+
+body {
+  background-color: var(--vscode-editor-background);
+  color: var(--vscode-foreground);
+  font-family: var(--vscode-font-family);
+  font-size: var(--vscode-font-size);
+  padding: 16px;
+  margin: 0;
+}
+
+/* Search form */
+.search-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: flex-end;
+  margin-bottom: 16px;
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.form-field label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--vscode-descriptionForeground);
+}
+
+input,
+select {
+  background-color: var(--vscode-input-background);
+  color: var(--vscode-input-foreground);
+  border: 1px solid var(--vscode-input-border);
+  padding: 4px 8px;
+  border-radius: 2px;
+  font-family: inherit;
+  font-size: inherit;
+}
+
+input:focus,
+select:focus {
+  outline: 1px solid var(--vscode-focusBorder);
+  outline-offset: -1px;
+}
+
+button {
+  background-color: var(--vscode-button-background);
+  color: var(--vscode-button-foreground);
+  border: none;
+  padding: 6px 14px;
+  cursor: pointer;
+  border-radius: 2px;
+  font-family: inherit;
+  font-size: inherit;
+}
+
+button:hover {
+  background-color: var(--vscode-button-hoverBackground);
+}
+
+/* Results table */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 8px;
+}
+
+th {
+  background-color: var(--vscode-editorGroupHeader-tabsBackground);
+  color: var(--vscode-foreground);
+  cursor: pointer;
+  padding: 8px;
+  text-align: left;
+  user-select: none;
+  border-bottom: 2px solid var(--vscode-panel-border);
+  white-space: nowrap;
+}
+
+th:hover {
+  background-color: var(--vscode-list-hoverBackground);
+}
+
+th.sort-asc::after {
+  content: " \25B2";
+  font-size: 10px;
+}
+
+th.sort-desc::after {
+  content: " \25BC";
+  font-size: 10px;
+}
+
+td {
+  padding: 6px 8px;
+  border-bottom: 1px solid var(--vscode-panel-border);
+  vertical-align: top;
+}
+
+tr:hover {
+  background-color: var(--vscode-list-hoverBackground);
+}
+
+a {
+  color: var(--vscode-textLink-foreground);
+  text-decoration: none;
+  cursor: pointer;
+}
+
+a:hover {
+  color: var(--vscode-textLink-activeForeground);
+  text-decoration: underline;
+}
+
+/* Result count */
+.result-count {
+  margin-bottom: 4px;
+  color: var(--vscode-descriptionForeground);
+  font-size: 12px;
+}
+
+/* Loading state */
+.loading-indicator {
+  display: none;
+  padding: 16px;
+  text-align: center;
+  color: var(--vscode-descriptionForeground);
+}
+
+.loading-indicator.visible {
+  display: block;
+}
+
+/* Error state */
+.error-display {
+  display: none;
+  padding: 12px;
+  margin-top: 8px;
+  background-color: var(--vscode-inputValidation-errorBackground);
+  border: 1px solid var(--vscode-inputValidation-errorBorder);
+  color: var(--vscode-errorForeground);
+  border-radius: 4px;
+}
+
+.error-display.visible {
+  display: block;
+}
+
+/* IIIF link icon */
+.iiif-link {
+  margin-left: 6px;
+  font-size: 11px;
+  opacity: 0.8;
+}
