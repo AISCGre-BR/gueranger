@@ -41,15 +41,20 @@ export function formatResults(results: ManuscriptResult[], query: string): strin
     lines.push(`## ${siglum}`);
     lines.push(`- Library: ${first.library}`);
     lines.push(`- City: ${first.city}`);
-    lines.push(`- Century: ${first.century}`);
-    lines.push(`- IIIF Manifest: ${first.iiifManifest}`);
+    lines.push(`- Century: ${first.century === "N/A" ? "" : first.century}`);
+    if (first.imageAvailable === false && first.iiifManifest !== "N/A") {
+      lines.push(`- IIIF Manifest: ${first.iiifManifest} [unavailable]`);
+    } else {
+      lines.push(`- IIIF Manifest: ${first.iiifManifest}`);
+    }
     lines.push(`- Source: ${first.sourceDatabase}`);
     lines.push(`- Source URL: ${first.sourceUrl}`);
 
     for (const entry of entries) {
       lines.push(`  - Incipit: ${entry.incipit}`);
+      const matchLabel = entry.matchType === "both" ? "text+melody" : (entry.matchType ?? "text");
       lines.push(
-        `    Genre: ${entry.genre} | Feast: ${entry.feast} | Folio: ${entry.folio} | Cantus ID: ${entry.cantusId}`,
+        `    Genre: ${entry.genre} | Feast: ${entry.feast} | Folio: ${entry.folio} | Cantus ID: ${entry.cantusId} | Match: ${matchLabel}`,
       );
     }
   }

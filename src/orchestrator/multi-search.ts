@@ -9,6 +9,7 @@ import { BiblissimaAdapter } from "../adapters/biblissima/biblissima-adapter.js"
 import { MmmoAdapter } from "../adapters/mmmo/mmmo-adapter.js";
 import { deduplicateResults } from "./deduplicator.js";
 import { enrichWithCanvasLinks } from "./iiif-enrichment.js";
+import { validateImageUrls } from "../utils/image-validator.js";
 
 export interface MultiSearchResult {
   results: ManuscriptResult[];
@@ -85,7 +86,8 @@ export async function multiSearch(
   }
 
   const deduplicated = deduplicateResults(allResults);
-  const results = await enrichWithCanvasLinks(deduplicated);
+  const enriched = await enrichWithCanvasLinks(deduplicated);
+  const results = await validateImageUrls(enriched);
 
   return {
     results,
