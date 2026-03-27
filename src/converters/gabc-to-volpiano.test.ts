@@ -36,12 +36,12 @@ describe("gabcToVolpiano", () => {
     it("converts full GABC with text and neumes", () => {
       // c4 clef: f->65->'f', g->67->'g', h->69->'h', j->72->'k'
       expect(gabcToVolpiano("(c4) Pan(f)ge(gfg) lin(hjh)gua(g)")).toBe(
-        "fgfghjhg",
+        "fgfghkhg",
       );
     });
 
     it("converts neume-only input with c4 clef", () => {
-      expect(gabcToVolpiano("(c4)(f)(gfg)(hjh)(g)")).toBe("fgfghjhg");
+      expect(gabcToVolpiano("(c4)(f)(gfg)(hjh)(g)")).toBe("fgfghkhg");
     });
   });
 
@@ -60,7 +60,7 @@ describe("gabcToVolpiano", () => {
 
   describe("default clef", () => {
     it("uses c4 default when no explicit clef", () => {
-      expect(gabcToVolpiano("(f)(gfg)(hjh)(g)")).toBe("fgfghjhg");
+      expect(gabcToVolpiano("(f)(gfg)(hjh)(g)")).toBe("fgfghkhg");
     });
   });
 
@@ -75,10 +75,11 @@ describe("gabcToVolpiano", () => {
   describe("flat clef (cb3)", () => {
     it("uses flat scale with minor 7th for cb3 clef", () => {
       // cb3: clef_pos=4, C_ref=72, FLAT_SCALE=[0,2,4,5,7,9,10]
-      // With cb3, the 7th degree uses 10 instead of 11
+      // f: pos=2, rel=-2, oct=-1, deg=5 -> 72-12+9=69 -> 'h'
+      // g: pos=3, rel=-1, oct=-1, deg=6 -> 72-12+10=70 -> UNMAPPED (Bb not in Volpiano)
+      // h: pos=4, rel=0, oct=0, deg=0 -> 72+0=72 -> 'k'
       const result = gabcToVolpiano("(cb3)(f)(g)(h)");
-      expect(typeof result).toBe("string");
-      expect(result.length).toBe(3);
+      expect(result).toBe("hk"); // g skipped (MIDI 70 unmapped)
     });
   });
 
