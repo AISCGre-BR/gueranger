@@ -1,0 +1,48 @@
+{
+  "name": "gueranger",
+  "displayName": "Gueranger - Gregorian Chant Manuscript Search",
+  "version": "0.1.0",
+  "publisher": "gueranger",
+  "engines": {
+    "vscode": "^1.90.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "main": "./dist/extension.js",
+  "activationEvents": [],
+  "contributes": {
+    "commands": [
+      {
+        "command": "gueranger.search",
+        "title": "Gueranger: Search Manuscripts"
+      }
+    ],
+    "configuration": {
+      "title": "Gueranger",
+      "properties": {
+        "gueranger.serverPath": {
+          "type": "string",
+          "default": "",
+          "description": "Path to the Gueranger MCP server binary. Leave empty for auto-detection."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "compile": "node esbuild.mjs",
+    "watch": "node esbuild.mjs --watch",
+    "test": "vitest run",
+    "package": "vsce package"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.90.0",
+    "esbuild": "^0.27.4",
+    "typescript": "^6.0.2",
+    "vitest": "^4.1.1",
+    "@vscode/vsce": "^3.7.1"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.28.0"
+  }
+}

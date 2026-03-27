@@ -34,7 +34,10 @@ export async function handleSearchChants(params: {
       text += "\n\nSource warnings:\n" + warnings.map((w) => `- ${w}`).join("\n");
     }
     return {
-      content: [{ type: "text", text }],
+      content: [
+        { type: "text", text },
+        { type: "text", text: "---JSON---\n[]" },
+      ],
     };
   }
 
@@ -44,7 +47,10 @@ export async function handleSearchChants(params: {
   }
 
   return {
-    content: [{ type: "text", text }],
+    content: [
+      { type: "text", text },
+      { type: "text", text: "---JSON---\n" + JSON.stringify(results) },
+    ],
   };
 }
 
