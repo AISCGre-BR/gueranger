@@ -209,10 +209,103 @@ describe("multiSearch", () => {
   });
 });
 
+describe("multiSearch – MMMO integration", () => {
+  it("includes MMMO results in multi-search output", async () => {
+    const cantusResult = makeResult({ sourceDatabase: "Cantus", siglum: "A-1" });
+    const mmmoResult = makeResult({ sourceDatabase: "MMMO", siglum: "E-5" });
+
+    const adapters = [
+      makeMockAdapter("Cantus", [cantusResult]),
+      makeMockAdapter("MMMO", [mmmoResult]),
+    ];
+
+    const result = await multiSearch(adapters, baseQuery);
+
+    expect(result.results).toHaveLength(2);
+    expect(result.sourcesQueried).toContain("MMMO");
+    expect(result.sourcesSucceeded).toContain("MMMO");
+    expect(result.results.map((r) => r.sourceDatabase)).toContain("MMMO");
+  });
+
+  it("degrades gracefully when MMMO fails", async () => {
+    const cantusResult = makeResult({ sourceDatabase: "Cantus", siglum: "A-1" });
+    const diammResult = makeResult({ sourceDatabase: "DIAMM", siglum: "B-2" });
+
+    const adapters = [
+      makeMockAdapter("Cantus", [cantusResult]),
+      makeMockAdapter("DIAMM", [diammResult]),
+      makeFailingAdapter("MMMO", new Error("MMMO site unreachable")),
+    ];
+
+    const result = await multiSearch(adapters, baseQuery);
+
+    expect(result.results).toHaveLength(2);
+    expect(result.sourcesSucceeded).toEqual(["Cantus", "DIAMM"]);
+    expect(result.sourcesFailed).toEqual(["MMMO"]);
+    expect(result.warnings).toHaveLength(1);
+    expect(result.warnings[0]).toBe("MMMO: MMMO site unreachable");
+  });
+
+  it("deduplicates MMMO results with Cantus by siglum::folio", async () => {
+    // Cantus has century but no IIIF; MMMO has no century but has sourceUrl
+    const cantusResult = makeResult({
+      siglum: "F-Pn lat. 1090",
+      folio: "145v",
+      century: "12th century",
+      iiifManifest: "N/A",
+      sourceUrl: "https://cantus.example.com",
+      sourceDatabase: "Cantus",
+    });
+    const mmmoResult = makeResult({
+      siglum: "F-Pn lat. 1090",
+      folio: "145v",
+      century: "N/A",
+      iiifManifest: "N/A",
+      sourceUrl: "https://musmed.eu/chant/42",
+      sourceDatabase: "MMMO",
+    });
+
+    const adapters = [
+      makeMockAdapter("Cantus", [cantusResult]),
+      makeMockAdapter("MMMO", [mmmoResult]),
+    ];
+
+    const result = await multiSearch(adapters, baseQuery);
+
+    expect(result.results).toHaveLength(1);
+    // Merge keeps non-N/A century from Cantus
+    expect(result.results[0].century).toBe("12th century");
+    // sourceDatabase combines both
+    expect(result.results[0].sourceDatabase).toBe("Cantus, MMMO");
+  });
+
+  it("includes MMMO in combined results from all 5 sources", async () => {
+    const adapters = [
+      makeMockAdapter("Cantus", [makeResult({ sourceDatabase: "Cantus", siglum: "A-1" })]),
+      makeMockAdapter("DIAMM", [makeResult({ sourceDatabase: "DIAMM", siglum: "B-2" })]),
+      makeMockAdapter("RISM", [makeResult({ sourceDatabase: "RISM", siglum: "C-3" })]),
+      makeMockAdapter("Biblissima", [makeResult({ sourceDatabase: "Biblissima", siglum: "D-4" })]),
+      makeMockAdapter("MMMO", [makeResult({ sourceDatabase: "MMMO", siglum: "E-5" })]),
+    ];
+
+    const result = await multiSearch(adapters, baseQuery);
+
+    expect(result.results).toHaveLength(5);
+    expect(result.sourcesQueried).toEqual(["Cantus", "DIAMM", "RISM", "Biblissima", "MMMO"]);
+    expect(result.sourcesSucceeded).toEqual(["Cantus", "DIAMM", "RISM", "Biblissima", "MMMO"]);
+  });
+});
+
 describe("getActiveAdapters", () => {
-  it("returns 4 adapters", () => {
+  it("returns 5 adapters", () => {
     const adapters = getActiveAdapters();
-    expect(adapters).toHaveLength(4);
+    expect(adapters).toHaveLength(5);
+  });
+
+  it("includes an adapter named MMMO", () => {
+    const adapters = getActiveAdapters();
+    const names = adapters.map((a) => a.name);
+    expect(names).toContain("MMMO");
   });
 
   it("includes an adapter named Biblissima", () => {
@@ -221,9 +314,9 @@ describe("getActiveAdapters", () => {
     expect(names).toContain("Biblissima");
   });
 
-  it("includes Cantus, DIAMM, RISM, and Biblissima", () => {
+  it("includes Cantus, DIAMM, RISM, Biblissima, and MMMO", () => {
     const adapters = getActiveAdapters();
     const names = adapters.map((a) => a.name);
-    expect(names).toEqual(["Cantus Index Network", "DIAMM", "RISM Online", "Biblissima"]);
+    expect(names).toEqual(["Cantus Index Network", "DIAMM", "RISM Online", "Biblissima", "MMMO"]);
   });
 });
