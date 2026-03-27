@@ -1,6 +1,7 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
 import { normalizeLatinText } from "../normalizer/latin.js";
+import { isGabc, gabcToVolpiano } from "../converters/gabc-to-volpiano.js";
 import { multiSearch, getActiveAdapters } from "../orchestrator/multi-search.js";
 import { formatResults } from "../utils/format-response.js";
 import type { SearchQuery } from "../models/query.js";
@@ -18,13 +19,18 @@ export async function handleSearchChants(params: {
   melody?: string;
 }): Promise<{ content: Array<{ type: "text"; text: string }> }> {
   const adapters = getActiveAdapters();
+  const resolvedMelody = params.melody
+    ? isGabc(params.melody)
+      ? gabcToVolpiano(params.melody)
+      : params.melody
+    : undefined;
   const searchQuery: SearchQuery = {
     query: normalizeLatinText(params.query),
     rawQuery: params.query,
     genre: params.genre,
     century: params.century,
     feast: params.feast,
-    melody: params.melody,
+    melody: resolvedMelody,
   };
   const { results, warnings } = await multiSearch(adapters, searchQuery);
 
@@ -90,7 +96,7 @@ export function registerSearchChantsTool(server: McpServer): void {
         .string()
         .optional()
         .describe(
-          "Volpiano melodic incipit for melody-based search. Provide the Volpiano string as-is (e.g., '1---h--ij---h--g---k'). When provided, searches CantusDB by melody instead of text.",
+          "Melody incipit for melody-based search. Accepts Volpiano notation (e.g., '1---h--ij---h--g---k') or GABC notation (e.g., '(c4) Pan(f)ge(gfg) lin(hjh)gua(g)'). GABC input is auto-detected and converted to Volpiano. When provided, searches CantusDB by melody instead of text.",
         ),
     },
   }, async (params) => {

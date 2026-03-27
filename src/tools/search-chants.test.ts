@@ -134,4 +134,43 @@ describe("handleSearchChants", () => {
     expect(text).toContain("City:");
     expect(text).toContain("Century:");
   });
+
+  describe("GABC melody auto-detection", () => {
+    it("converts GABC melody to Volpiano before passing to multiSearch", async () => {
+      mockMultiSearch.mockResolvedValue(makeSearchResult([makeMockResult()]));
+
+      await handleSearchChants({
+        query: "Pange lingua",
+        melody: "(c4)(f)(gfg)(hjh)(g)",
+      });
+
+      const query = mockMultiSearch.mock.calls[0][1] as SearchQuery;
+      // GABC should be converted to Volpiano pitch string, not passed through raw
+      expect(query.melody).toBe("fgfghkhg");
+      expect(query.melody).not.toContain("(");
+    });
+
+    it("passes Volpiano melody through unchanged", async () => {
+      mockMultiSearch.mockResolvedValue(makeSearchResult([makeMockResult()]));
+
+      await handleSearchChants({
+        query: "Pange lingua",
+        melody: "1---h--ij---h",
+      });
+
+      const query = mockMultiSearch.mock.calls[0][1] as SearchQuery;
+      expect(query.melody).toBe("1---h--ij---h");
+    });
+
+    it("passes undefined melody through as undefined", async () => {
+      mockMultiSearch.mockResolvedValue(makeSearchResult([makeMockResult()]));
+
+      await handleSearchChants({
+        query: "Pange lingua",
+      });
+
+      const query = mockMultiSearch.mock.calls[0][1] as SearchQuery;
+      expect(query.melody).toBeUndefined();
+    });
+  });
 });
