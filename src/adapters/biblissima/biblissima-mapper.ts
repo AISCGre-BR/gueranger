@@ -59,5 +59,7 @@ export function mapBiblissimaToResult(
     iiifManifest: item.iiifManifestUrl || "N/A",
     sourceUrl: item.biblissimaUrl || "N/A",
     sourceDatabase: "Biblissima",
+    matchType: "text",
+    imageAvailable: true,
   };
 }

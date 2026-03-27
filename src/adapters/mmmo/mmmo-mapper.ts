@@ -23,5 +23,7 @@ export function mapMmmoToResult(item: MmmoChantResult): ManuscriptResult {
     iiifManifest: item.imageUrl || "N/A",
     sourceUrl: `https://musmed.eu/chant/${item.chantId}`,
     sourceDatabase: "MMMO",
+    matchType: "text",
+    imageAvailable: true,
   };
 }

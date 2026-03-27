@@ -18,9 +18,9 @@ const validData = {
 };
 
 describe("ManuscriptResultSchema", () => {
-  it("parses valid data with all 12 fields", () => {
+  it("parses valid data and adds matchType default", () => {
     const result = ManuscriptResultSchema.parse(validData);
-    expect(result).toEqual(validData);
+    expect(result).toEqual({ ...validData, matchType: "text", imageAvailable: true });
   });
 
   it("fails when siglum is missing", () => {
@@ -87,10 +87,10 @@ describe("ManuscriptResultSchema", () => {
     expect(() => ManuscriptResultSchema.parse({ siglum: "test" })).toThrow();
   });
 
-  it("has exactly 12 required fields", () => {
+  it("has exactly 14 fields (12 required + matchType + imageAvailable with defaults)", () => {
     const result = ManuscriptResultSchema.parse(validData);
     const keys = Object.keys(result);
-    expect(keys).toHaveLength(12);
+    expect(keys).toHaveLength(14);
     expect(keys).toContain("siglum");
     expect(keys).toContain("library");
     expect(keys).toContain("city");
@@ -103,6 +103,20 @@ describe("ManuscriptResultSchema", () => {
     expect(keys).toContain("iiifManifest");
     expect(keys).toContain("sourceUrl");
     expect(keys).toContain("sourceDatabase");
+    expect(keys).toContain("matchType");
+    expect(keys).toContain("imageAvailable");
+    expect(result.matchType).toBe("text");
+    expect(result.imageAvailable).toBe(true);
+  });
+
+  it("imageAvailable defaults to true when not provided", () => {
+    const result = ManuscriptResultSchema.parse(validData);
+    expect(result.imageAvailable).toBe(true);
+  });
+
+  it("imageAvailable can be explicitly set to false", () => {
+    const result = ManuscriptResultSchema.parse({ ...validData, imageAvailable: false });
+    expect(result.imageAvailable).toBe(false);
   });
 
   it("all fields are strings (rejects numbers)", () => {

@@ -2,7 +2,7 @@ import type { SourceAdapter } from "../adapter.interface.js";
 import type { SearchQuery } from "../../models/query.js";
 import type { ManuscriptResult } from "../../models/manuscript-result.js";
 import { searchByText, getChantsByCid } from "./cantus-index-client.js";
-import { searchByMelody } from "./cantus-db-client.js";
+import { searchByMelody, fetchChantDetail } from "./cantus-db-client.js";
 import {
   mapCantusIndexChantToResult,
   mapCantusDbMelodyToResult,
@@ -12,6 +12,7 @@ import { parseCentury } from "../../utils/century-parser.js";
 
 const MAX_RESULTS = 100;
 const MAX_CID_FANOUT = 20;
+const MAX_ENRICHMENT = 10;
 
 /**
  * CantusAdapter queries the Cantus Index network (Cantus Index + CantusDB)
@@ -33,11 +34,46 @@ export class CantusAdapter implements SourceAdapter {
   async search(query: SearchQuery): Promise<ManuscriptResult[]> {
     this.lastRelaxationMessage = null;
 
-    if (query.melody) {
-      return this.melodySearch(query);
+    // When both text and melody are provided, run both searches and merge
+    if (query.melody && query.query) {
+      const [textResults, melodyResults] = await Promise.all([
+        this.textSearch(query),
+        this.melodySearch(query),
+      ]);
+
+      // Tag text-only results
+      for (const r of textResults) r.matchType = "text";
+      // Tag melody-only results
+      for (const r of melodyResults) r.matchType = "melody";
+
+      // Merge: if same siglum+folio found in both, tag as "both"
+      const textKeys = new Set(textResults.map((r) => `${r.siglum}::${r.folio}`));
+      for (const r of melodyResults) {
+        const key = `${r.siglum}::${r.folio}`;
+        if (textKeys.has(key)) {
+          // Find the text result and upgrade it to "both"
+          const textMatch = textResults.find(
+            (t) => t.siglum === r.siglum && t.folio === r.folio,
+          );
+          if (textMatch) textMatch.matchType = "both";
+          // Skip adding the melody duplicate
+        } else {
+          textResults.push(r);
+        }
+      }
+
+      return textResults.slice(0, MAX_RESULTS);
     }
 
-    return this.textSearch(query);
+    if (query.melody) {
+      const results = await this.melodySearch(query);
+      for (const r of results) r.matchType = "melody";
+      return results;
+    }
+
+    const results = await this.textSearch(query);
+    for (const r of results) r.matchType = "text";
+    return results;
   }
 
   private async melodySearch(query: SearchQuery): Promise<ManuscriptResult[]> {
@@ -46,8 +82,28 @@ export class CantusAdapter implements SourceAdapter {
       feast: query.feast,
     });
 
-    let results = response.results.map((item) =>
-      mapCantusDbMelodyToResult(item, item.cantus_id),
+    // Enrich melody results with image_link from /json-node/ detail endpoint
+    const items = response.results;
+    const toEnrich = items.slice(0, MAX_ENRICHMENT);
+    let imageLinks: (string | undefined)[] = [];
+
+    try {
+      const details = await Promise.all(
+        toEnrich.map((item) => fetchChantDetail(item.id)),
+      );
+      imageLinks = details.map((d) => d?.image_link);
+      const enrichedCount = imageLinks.filter(Boolean).length;
+      if (enrichedCount > 0) {
+        console.log(
+          `[CantusAdapter] Enriched ${enrichedCount}/${toEnrich.length} melody results with image links`,
+        );
+      }
+    } catch (error) {
+      console.error("[CantusAdapter] Enrichment failed, continuing without:", error);
+    }
+
+    let results = items.map((item, i) =>
+      mapCantusDbMelodyToResult(item, item.cantus_id, imageLinks[i]),
     );
 
     // Century filter is applied client-side (CantusDB melody search doesn't support it)

@@ -24,6 +24,8 @@ function makeResult(overrides: Partial<ManuscriptResult> = {}): ManuscriptResult
     iiifManifest: "N/A",
     sourceUrl: "https://example.com",
     sourceDatabase: "Test Source",
+    matchType: "text",
+    imageAvailable: true,
     ...overrides,
   };
 }

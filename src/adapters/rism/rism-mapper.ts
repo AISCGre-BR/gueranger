@@ -61,5 +61,7 @@ export function mapRismToResult(item: RismSearchItem): ManuscriptResult {
     iiifManifest: "N/A",
     sourceUrl: item.id,
     sourceDatabase: "RISM Online",
+    matchType: "text",
+    imageAvailable: true,
   };
 }

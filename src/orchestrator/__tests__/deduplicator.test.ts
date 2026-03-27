@@ -16,6 +16,8 @@ function makeResult(overrides: Partial<ManuscriptResult> = {}): ManuscriptResult
     iiifManifest: "N/A",
     sourceUrl: "https://cantusindex.org/chant/1",
     sourceDatabase: "Cantus Index Network",
+    matchType: "text",
+    imageAvailable: true,
     ...overrides,
   };
 }

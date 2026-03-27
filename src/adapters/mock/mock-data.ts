@@ -21,6 +21,8 @@ export const MOCK_MANUSCRIPTS: ManuscriptResult[] = [
     iiifManifest: "N/A",
     sourceUrl: "https://cantusindex.org/id/008368",
     sourceDatabase: "Cantus Index",
+    matchType: "text",
+    imageAvailable: true,
   },
   {
     siglum: "A-Wn 1799",
@@ -35,6 +37,8 @@ export const MOCK_MANUSCRIPTS: ManuscriptResult[] = [
     iiifManifest: "N/A",
     sourceUrl: "https://cantusindex.org/id/008369",
     sourceDatabase: "Cantus Index",
+    matchType: "text",
+    imageAvailable: true,
   },
   {
     siglum: "D-Mbs Clm 4306",
@@ -49,6 +53,8 @@ export const MOCK_MANUSCRIPTS: ManuscriptResult[] = [
     iiifManifest: "N/A",
     sourceUrl: "https://cantusindex.org/id/008272",
     sourceDatabase: "Cantus Index",
+    matchType: "text",
+    imageAvailable: true,
   },
   {
     siglum: "GB-Lbl Add. 30850",
@@ -63,6 +69,8 @@ export const MOCK_MANUSCRIPTS: ManuscriptResult[] = [
     iiifManifest: "N/A",
     sourceUrl: "https://cantusindex.org/id/008407",
     sourceDatabase: "Cantus Index",
+    matchType: "text",
+    imageAvailable: true,
   },
   {
     siglum: "I-Rvat lat. 5319",
@@ -77,6 +85,8 @@ export const MOCK_MANUSCRIPTS: ManuscriptResult[] = [
     iiifManifest: "N/A",
     sourceUrl: "https://cantusindex.org/id/004696",
     sourceDatabase: "Cantus Index",
+    matchType: "text",
+    imageAvailable: true,
   },
   {
     siglum: "CH-SGs 390",
@@ -91,6 +101,8 @@ export const MOCK_MANUSCRIPTS: ManuscriptResult[] = [
     iiifManifest: "N/A",
     sourceUrl: "https://cantusindex.org/id/ah054005",
     sourceDatabase: "Cantus Index",
+    matchType: "text",
+    imageAvailable: true,
   },
   {
     siglum: "E-Mn Vitrina 20-4",
@@ -105,6 +117,8 @@ export const MOCK_MANUSCRIPTS: ManuscriptResult[] = [
     iiifManifest: "N/A",
     sourceUrl: "https://cantusindex.org/id/008275",
     sourceDatabase: "Cantus Index",
+    matchType: "text",
+    imageAvailable: true,
   },
   {
     siglum: "F-Pn lat. 1090",
@@ -119,5 +133,7 @@ export const MOCK_MANUSCRIPTS: ManuscriptResult[] = [
     iiifManifest: "N/A",
     sourceUrl: "https://cantusindex.org/id/008272",
     sourceDatabase: "Cantus Index",
+    matchType: "text",
+    imageAvailable: true,
   },
 ];

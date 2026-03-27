@@ -15,6 +15,8 @@ const sampleResult: ManuscriptResult = {
   iiifManifest: "N/A",
   sourceUrl: "https://cantusindex.org/id/008368",
   sourceDatabase: "Cantus Index",
+  matchType: "text",
+  imageAvailable: true,
 };
 
 describe("formatResults", () => {
@@ -73,6 +75,8 @@ describe("formatResults", () => {
       iiifManifest: "N/A",
       sourceUrl: "https://cantusindex.org/id/008369",
       sourceDatabase: "Cantus Index",
+      matchType: "text",
+      imageAvailable: true,
     };
 
     const output = formatResults([sampleResult, result2], "Pange lingua");

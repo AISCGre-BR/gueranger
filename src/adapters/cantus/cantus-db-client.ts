@@ -1,6 +1,7 @@
 import { createRateLimiter, fetchWithRetry } from "../../utils/http-client.js";
 import { volpianoToNotes } from "./volpiano.js";
 import type { CantusDbMelodyResponse } from "./cantus-types.js";
+import { CantusDbChantDetailSchema, type CantusDbChantDetail } from "./cantus-types.js";
 
 const CANTUS_DB_BASE = "https://cantusdatabase.org";
 
@@ -31,5 +32,27 @@ export async function searchByMelody(
   } catch (error) {
     console.error("[CantusDbClient] searchByMelody error:", error);
     return { results: [], result_count: 0 };
+  }
+}
+
+/**
+ * Fetches chant detail from CantusDB /json-node/{id} endpoint.
+ * Returns parsed detail on success, null on any error (best-effort).
+ */
+export async function fetchChantDetail(
+  chantId: string | number,
+): Promise<CantusDbChantDetail | null> {
+  try {
+    const url = `${CANTUS_DB_BASE}/json-node/${chantId}`;
+    const data = await fetchWithRetry(url, { limiter, timeout: 5000 });
+    const parsed = CantusDbChantDetailSchema.safeParse(data);
+    if (parsed.success) {
+      return parsed.data;
+    }
+    console.error("[CantusDbClient] fetchChantDetail parse error:", parsed.error);
+    return null;
+  } catch (error) {
+    console.error("[CantusDbClient] fetchChantDetail error:", error);
+    return null;
   }
 }

@@ -67,5 +67,7 @@ export function mapDiammToResult(
     iiifManifest,
     sourceUrl: `https://www.diamm.ac.uk/sources/${source.pk}/`,
     sourceDatabase: "DIAMM",
+    matchType: "text",
+    imageAvailable: true,
   };
 }

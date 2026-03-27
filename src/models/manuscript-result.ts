@@ -18,8 +18,12 @@ export const ManuscriptResultSchema = z.object({
 
   // Links
   iiifManifest: z.string().describe("IIIF manifest URL when available, 'N/A' otherwise"),
+  imageAvailable: z.boolean().default(true).describe("Whether the image URL has been validated as accessible"),
   sourceUrl: z.string().describe("Permalink in the original database"),
   sourceDatabase: z.string().describe("Name of the source database (e.g., 'Cantus Database', 'DIAMM')"),
+
+  // Match metadata
+  matchType: z.enum(["text", "melody", "both"]).default("text").describe("How this result was found: text search, melody search, or both"),
 });
 
 export type ManuscriptResult = z.infer<typeof ManuscriptResultSchema>;

@@ -30,6 +30,8 @@ function makeMockResult(overrides: Partial<ManuscriptResult> = {}): ManuscriptRe
     iiifManifest: "N/A",
     sourceUrl: "https://cantusindex.org/chant/1",
     sourceDatabase: "Cantus Database",
+    matchType: "text",
+    imageAvailable: true,
     ...overrides,
   };
 }

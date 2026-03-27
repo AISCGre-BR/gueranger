@@ -31,6 +31,8 @@ export function mapCantusIndexChantToResult(
     iiifManifest: "N/A",
     sourceUrl: chant.chantlink || chant.srclink || "N/A",
     sourceDatabase: dbCodeToName(chant.db || ""),
+    matchType: "text",
+    imageAvailable: true,
   };
 }
 
@@ -43,7 +45,14 @@ export function mapCantusIndexChantToResult(
 export function mapCantusDbMelodyToResult(
   item: CantusDbMelodyItem,
   cantusId?: string,
+  imageLink?: string,
 ): ManuscriptResult {
+  // Use imageLink from detail endpoint when it's a real value (not empty, not "N/A")
+  const iiifManifest =
+    imageLink && imageLink !== "N/A" && imageLink.trim() !== ""
+      ? imageLink
+      : "N/A";
+
   return {
     siglum:
       [item.source__holding_institution__siglum, item.source__shelfmark]
@@ -57,8 +66,10 @@ export function mapCantusDbMelodyToResult(
     feast: item.feast__name || "N/A",
     folio: item.folio || "N/A",
     cantusId: cantusId || item.cantus_id || "N/A",
-    iiifManifest: "N/A",
+    iiifManifest,
     sourceUrl: `https://cantusdatabase.org/id/${item.cantus_id || ""}`,
     sourceDatabase: "Cantus Database",
+    matchType: "text",
+    imageAvailable: true,
   };
 }

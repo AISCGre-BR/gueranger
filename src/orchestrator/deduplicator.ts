@@ -50,7 +50,7 @@ function mergeResults(group: ManuscriptResult[]): ManuscriptResult {
   for (const entry of group.slice(1)) {
     for (const field of fields) {
       if (merged[field] === "N/A" && entry[field] !== "N/A") {
-        (merged as Record<string, string>)[field] = entry[field];
+        (merged as Record<string, string | boolean>)[field] = entry[field];
       }
     }
   }
