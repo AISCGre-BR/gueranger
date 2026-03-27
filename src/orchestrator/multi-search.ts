@@ -5,7 +5,9 @@ import { DiammCredentialsMissingError } from "../adapters/diamm/diamm-adapter.js
 import { CantusAdapter } from "../adapters/cantus/cantus-adapter.js";
 import { DiammAdapter } from "../adapters/diamm/diamm-adapter.js";
 import { RismAdapter } from "../adapters/rism/rism-adapter.js";
+import { BiblissimaAdapter } from "../adapters/biblissima/biblissima-adapter.js";
 import { deduplicateResults } from "./deduplicator.js";
+import { enrichWithCanvasLinks } from "./iiif-enrichment.js";
 
 export interface MultiSearchResult {
   results: ManuscriptResult[];
@@ -81,7 +83,8 @@ export async function multiSearch(
     }
   }
 
-  const results = deduplicateResults(allResults);
+  const deduplicated = deduplicateResults(allResults);
+  const results = await enrichWithCanvasLinks(deduplicated);
 
   return {
     results,
@@ -97,5 +100,5 @@ export async function multiSearch(
  * Always includes DIAMM -- the adapter handles credential checks itself.
  */
 export function getActiveAdapters(): SourceAdapter[] {
-  return [new CantusAdapter(), new DiammAdapter(), new RismAdapter()];
+  return [new CantusAdapter(), new DiammAdapter(), new RismAdapter(), new BiblissimaAdapter()];
 }

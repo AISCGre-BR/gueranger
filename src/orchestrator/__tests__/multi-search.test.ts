@@ -2,8 +2,13 @@ import { describe, it, expect, vi } from "vitest";
 import type { SourceAdapter } from "../../adapters/adapter.interface.js";
 import type { SearchQuery } from "../../models/query.js";
 import type { ManuscriptResult } from "../../models/manuscript-result.js";
-import { multiSearch } from "../multi-search.js";
+import { multiSearch, getActiveAdapters } from "../multi-search.js";
 import { DiammCredentialsMissingError } from "../../adapters/diamm/diamm-adapter.js";
+
+// Mock enrichWithCanvasLinks to be a pass-through in multiSearch tests
+vi.mock("../iiif-enrichment.js", () => ({
+  enrichWithCanvasLinks: vi.fn((results: ManuscriptResult[]) => Promise.resolve(results)),
+}));
 
 function makeResult(overrides: Partial<ManuscriptResult> = {}): ManuscriptResult {
   return {
@@ -162,6 +167,26 @@ describe("multiSearch", () => {
     expect(result.results[0].sourceDatabase).toBe("Cantus, DIAMM");
   });
 
+  it("includes Biblissima in combined results from 4 sources", async () => {
+    const cantusResult = makeResult({ sourceDatabase: "Cantus", siglum: "A-1" });
+    const diammResult = makeResult({ sourceDatabase: "DIAMM", siglum: "B-2" });
+    const rismResult = makeResult({ sourceDatabase: "RISM", siglum: "C-3" });
+    const biblissimaResult = makeResult({ sourceDatabase: "Biblissima", siglum: "D-4" });
+
+    const adapters = [
+      makeMockAdapter("Cantus", [cantusResult]),
+      makeMockAdapter("DIAMM", [diammResult]),
+      makeMockAdapter("RISM", [rismResult]),
+      makeMockAdapter("Biblissima", [biblissimaResult]),
+    ];
+
+    const result = await multiSearch(adapters, baseQuery);
+
+    expect(result.results).toHaveLength(4);
+    expect(result.sourcesQueried).toContain("Biblissima");
+    expect(result.sourcesSucceeded).toContain("Biblissima");
+  });
+
   it("emits exact D-04 warning when DiammCredentialsMissingError is thrown", async () => {
     const cantusResult = makeResult({ sourceDatabase: "Cantus", siglum: "A-1" });
 
@@ -181,5 +206,24 @@ describe("multiSearch", () => {
     // DIAMM in failed list
     expect(result.sourcesFailed).toEqual(["DIAMM"]);
     expect(result.sourcesSucceeded).toEqual(["Cantus"]);
+  });
+});
+
+describe("getActiveAdapters", () => {
+  it("returns 4 adapters", () => {
+    const adapters = getActiveAdapters();
+    expect(adapters).toHaveLength(4);
+  });
+
+  it("includes an adapter named Biblissima", () => {
+    const adapters = getActiveAdapters();
+    const names = adapters.map((a) => a.name);
+    expect(names).toContain("Biblissima");
+  });
+
+  it("includes Cantus, DIAMM, RISM, and Biblissima", () => {
+    const adapters = getActiveAdapters();
+    const names = adapters.map((a) => a.name);
+    expect(names).toEqual(["Cantus Index Network", "DIAMM", "RISM Online", "Biblissima"]);
   });
 });
