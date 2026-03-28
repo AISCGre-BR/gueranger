@@ -33,6 +33,11 @@
     "folio": "Folio",
     "source": "Source",
     "match": "Match",
+    "matchType": {
+      "text": "Text",
+      "melody": "Melody",
+      "both": "Both"
+    },
     "image": "Image",
     "imageDetected": "Detected",
     "imageNotFound": "Not found",

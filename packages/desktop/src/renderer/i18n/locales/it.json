@@ -33,6 +33,11 @@
     "folio": "Folio",
     "source": "Fonte",
     "match": "Tipo",
+    "matchType": {
+      "text": "Testo",
+      "melody": "Melodia",
+      "both": "Entrambi"
+    },
     "image": "Immagine",
     "imageDetected": "Rilevata",
     "imageNotFound": "Non trovata",

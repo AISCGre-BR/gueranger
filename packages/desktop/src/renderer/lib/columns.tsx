@@ -106,6 +106,10 @@ export function useColumns() {
     col.accessor("matchType", {
       header: t("table.match"),
       size: 80,
+      cell: ({ getValue }) => {
+        const val = getValue();
+        return <span>{t(`table.matchType.${val}`)}</span>;
+      },
     }),
   ];
 }
