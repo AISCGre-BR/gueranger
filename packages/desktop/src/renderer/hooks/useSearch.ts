@@ -1,4 +1,5 @@
 import { useState, useCallback } from "react";
+import i18n from "../i18n";
 import type { ManuscriptRow } from "../lib/columns";
 
 export interface SearchState {
@@ -85,7 +86,7 @@ export function useSearch() {
       setState((prev) => ({
         ...prev,
         loading: false,
-        error: `Search failed: ${msg}. Check your connection and try again.`,
+        error: i18n.t("search.error", { message: msg }),
         results: [],
         hasSearched: true,
       }));

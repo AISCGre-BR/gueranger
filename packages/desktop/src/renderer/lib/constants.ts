@@ -1,17 +1,17 @@
-/** Genre options for the search form dropdown (D-03). */
+/** Genre options for the search form dropdown (D-03, D-07). Latin forms used across all languages. */
 export const GENRE_OPTIONS = [
-  "Antiphon",
-  "Hymn",
-  "Responsory",
-  "Introit",
-  "Gradual",
+  "Antiphona",
+  "Hymnus",
+  "Responsorium",
+  "Introitus",
+  "Graduale",
   "Alleluia",
-  "Offertory",
-  "Communion",
-  "Sequence",
-  "Tract",
-  "Invitatory",
-  "Versicle",
+  "Offertorium",
+  "Communio",
+  "Sequentia",
+  "Tractus",
+  "Invitatorium",
+  "Versiculum",
 ];
 
 /** Century options for the search form dropdown (D-03). Centuries 9 through 16. */
