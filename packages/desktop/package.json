@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "electron-vite dev",
     "build": "electron-vite build",
-    "preview": "electron-vite preview"
+    "preview": "electron-vite preview",
+    "test": "vitest run --reporter=verbose"
   },
   "dependencies": {
     "@gueranger/core": "*",
@@ -13,10 +14,14 @@
     "react-dom": "^19.2.4"
   },
   "devDependencies": {
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.2",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^4.5.2",
     "electron": "^41.1.0",
-    "electron-vite": "^5.0.0"
+    "electron-vite": "^5.0.0",
+    "jsdom": "^29.0.1",
+    "vitest": "^4.1.2"
   }
 }
