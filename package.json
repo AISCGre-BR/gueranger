@@ -7,7 +7,7 @@
     "build:mcp": "npm run build -w @gueranger/mcp",
     "dev:mcp": "npm run dev -w @gueranger/mcp",
     "test": "vitest run",
-    "dev:desktop": "npm run dev -w @gueranger/desktop",
+    "dev:desktop": "npm run build:core && npm run dev -w @gueranger/desktop",
     "build:desktop": "npm run build -w @gueranger/desktop",
     "inspect": "npx @modelcontextprotocol/inspector node packages/mcp/build/server.js"
   },

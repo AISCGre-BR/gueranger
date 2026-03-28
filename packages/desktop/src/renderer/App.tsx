@@ -22,8 +22,9 @@ function App() {
     try {
       const response = await window.gueranger.search({ query });
       setResults(response.results);
-    } catch {
-      setError("Search failed. Check your connection and try again.");
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : String(err);
+      setError(`Search failed: ${msg}`);
       setResults([]);
     } finally {
       setLoading(false);

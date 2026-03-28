@@ -22,7 +22,12 @@ function createWindow(): void {
 }
 
 ipcMain.handle("search:execute", async (_event, params) => {
-  return handleSearch(params);
+  try {
+    return await handleSearch(params);
+  } catch (err) {
+    console.error("[search:execute] Error:", err);
+    throw err;
+  }
 });
 
 app.whenReady().then(createWindow);
