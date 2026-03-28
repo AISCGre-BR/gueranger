@@ -1,11 +1,17 @@
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { SearchForm } from "./components/SearchForm";
 import { ResultsTable } from "./components/ResultsTable";
 import { WarningBanner } from "./components/WarningBanner";
 import { LanguageSwitcher } from "./components/LanguageSwitcher";
 import { ThemeToggle } from "./components/ThemeToggle";
+import { GoogleAccountButton } from "./components/GoogleAccountButton";
+import { DiammCredentialsDialog } from "./components/DiammCredentialsDialog";
+import { ExportToast } from "./components/ExportToast";
 import { useSearch } from "./hooks/useSearch";
 import { useSettings } from "./hooks/useSettings";
+import { useAuth } from "./hooks/useAuth";
+import { useExport } from "./hooks/useExport";
 import { Search, SearchX } from "lucide-react";
 import { SearchProgress } from "./components/SearchProgress";
 import iconUrl from "./assets/icon.png";
@@ -13,6 +19,9 @@ import iconUrl from "./assets/icon.png";
 function App() {
   const { t } = useTranslation();
   const { language, theme, setLanguage, setTheme } = useSettings();
+  const auth = useAuth();
+  const exportState = useExport();
+  const [diammOpen, setDiammOpen] = useState(false);
   const {
     results,
     warnings,
@@ -39,6 +48,7 @@ function App() {
             </h1>
           </div>
           <div className="flex items-center gap-2">
+            <GoogleAccountButton auth={auth} onOpenDiamm={() => setDiammOpen(true)} />
             <LanguageSwitcher language={language} onChangeLanguage={setLanguage} />
             <ThemeToggle theme={theme} onChangeTheme={setTheme} />
           </div>
@@ -98,11 +108,23 @@ function App() {
               <ResultsTable
                 data={results}
                 sourcesSucceeded={sourcesSucceeded}
+                auth={auth}
+                exportState={exportState}
+                searchQuery={searchedQuery ?? ""}
               />
             </>
           )}
         </div>
       </div>
+
+      <DiammCredentialsDialog open={diammOpen} onClose={() => setDiammOpen(false)} />
+      <ExportToast
+        status={exportState.status}
+        url={exportState.url}
+        errorMessage={exportState.errorMessage}
+        onRetry={exportState.retry}
+        onDismiss={exportState.dismiss}
+      />
     </div>
   );
 }

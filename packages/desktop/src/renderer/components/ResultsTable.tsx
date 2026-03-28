@@ -10,16 +10,21 @@ import {
   type RowSelectionState,
   type ColumnResizeMode,
 } from "@tanstack/react-table";
+import { FileSpreadsheet } from "lucide-react";
 import { useColumns, SortIndicator, type ManuscriptRow } from "../lib/columns";
 import { PAGE_SIZE } from "../lib/constants";
 import { Pagination } from "./Pagination";
+import { ExportDialog } from "./ExportDialog";
 
 interface Props {
   data: ManuscriptRow[];
   sourcesSucceeded: string[];
+  auth: { signedIn: boolean };
+  exportState: { exportToSheets: (params: { rows: Record<string, string>[]; columns: string[]; sheetName: string; existingSpreadsheetId?: string; appendOrNewTab?: "append" | "newTab" }) => void };
+  searchQuery: string;
 }
 
-export function ResultsTable({ data, sourcesSucceeded }: Props) {
+export function ResultsTable({ data, sourcesSucceeded, auth, exportState, searchQuery }: Props) {
   const { t } = useTranslation();
   const columns = useColumns();
   const [sorting, setSorting] = useState<SortingState>([]);
@@ -46,8 +51,11 @@ export function ResultsTable({ data, sourcesSucceeded }: Props) {
     enableColumnResizing: true,
   });
 
+  const [exportDialogOpen, setExportDialogOpen] = useState(false);
+
   const selectedCount = Object.keys(rowSelection).length;
   const totalCount = data.length;
+  const selectedRows = table.getSelectedRowModel().rows.map((r) => r.original);
 
   // Compute percentage widths from column sizes
   const totalSize = table.getCenterTotalSize();
@@ -71,7 +79,27 @@ export function ResultsTable({ data, sourcesSucceeded }: Props) {
             ) : null;
           })()}
         </div>
-        {/* Phase 10 export buttons will go here */}
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => setExportDialogOpen(true)}
+            disabled={selectedCount === 0 || !auth.signedIn}
+            title={
+              !auth.signedIn
+                ? t("export.signInRequired")
+                : selectedCount === 0
+                  ? t("export.selectRequired")
+                  : undefined
+            }
+            className={`flex items-center gap-1.5 rounded-md px-3 py-2 text-xs font-medium transition-colors ${
+              selectedCount === 0 || !auth.signedIn
+                ? "cursor-not-allowed bg-slate-200 text-slate-400 dark:bg-slate-700 dark:text-slate-500"
+                : "bg-blue-600 text-white hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600"
+            }`}
+          >
+            <FileSpreadsheet className="h-3.5 w-3.5" />
+            {t("export.toSheets")}
+          </button>
+        </div>
       </div>
 
       {/* Table */}
@@ -160,6 +188,17 @@ export function ResultsTable({ data, sourcesSucceeded }: Props) {
 
       {/* Pagination (D-09) */}
       <Pagination table={table} />
+
+      <ExportDialog
+        open={exportDialogOpen}
+        onClose={() => setExportDialogOpen(false)}
+        selectedRows={selectedRows}
+        searchQuery={searchQuery}
+        onExport={(params) => {
+          setExportDialogOpen(false);
+          exportState.exportToSheets(params);
+        }}
+      />
     </div>
   );
 }
