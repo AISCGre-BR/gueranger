@@ -53,7 +53,7 @@ function withTimeout<T>(promise: Promise<T>, ms: number): Promise<T> {
 export async function multiSearch(
   adapters: SourceAdapter[],
   query: SearchQuery,
-  timeoutMs = 15000,
+  timeoutMs = 30000,
 ): Promise<MultiSearchResult> {
   const sourcesQueried = adapters.map((a) => a.name);
   const sourcesSucceeded: string[] = [];

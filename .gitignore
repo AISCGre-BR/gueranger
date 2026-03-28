@@ -2,3 +2,5 @@ node_modules/
 build/
 extension/dist/
 *.tsbuildinfo
+.env
+.env.local

@@ -3,7 +3,11 @@
     "gueranger": {
       "type": "stdio",
       "command": "node",
-      "args": ["./build/server.js"]
+      "args": ["--env-file=.env", "./build/server.js"],
+      "env": {
+        "DIAMM_USERNAME": "${DIAMM_USERNAME}",
+        "DIAMM_PASSWORD": "${DIAMM_PASSWORD}"
+      }
     }
   }
 }

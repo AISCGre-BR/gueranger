@@ -21,7 +21,7 @@ import type { MmmoChantResult } from "./mmmo-types.js";
 export class MmmoAdapter implements SourceAdapter {
   readonly name = "MMMO";
 
-  private limiter = createRateLimiter({ maxConcurrent: 1, minTime: 3000 });
+  private limiter = createRateLimiter({ maxConcurrent: 1, minTime: 2000 });
 
   async search(query: SearchQuery): Promise<ManuscriptResult[]> {
     try {
