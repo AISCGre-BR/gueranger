@@ -54,18 +54,20 @@ describe("validateImageUrls", () => {
     expect(mockFetch).toHaveBeenCalledTimes(1);
   });
 
-  it("sets imageAvailable=false for failed HEAD request (non-2xx)", async () => {
+  it("keeps imageAvailable=true when HEAD fails but URL exists (trusts adapter)", async () => {
     mockFetch.mockResolvedValue({ ok: false, status: 404 });
     const results = [makeResult({ iiifManifest: "https://example.com/broken.json" })];
     const validated = await validateImageUrls(results);
-    expect(validated[0].imageAvailable).toBe(false);
+    // Adapter set imageAvailable=true and URL exists — don't downgrade on HEAD failure
+    expect(validated[0].imageAvailable).toBe(true);
   });
 
-  it("sets imageAvailable=false on network error", async () => {
+  it("keeps imageAvailable=true on network error when URL exists (trusts adapter)", async () => {
     mockFetch.mockRejectedValue(new Error("Network error"));
     const results = [makeResult({ iiifManifest: "https://example.com/timeout.json" })];
     const validated = await validateImageUrls(results);
-    expect(validated[0].imageAvailable).toBe(false);
+    // Adapter set imageAvailable=true and URL exists — timeout doesn't mean unavailable
+    expect(validated[0].imageAvailable).toBe(true);
   });
 
   it("validates same URL only once (cache)", async () => {

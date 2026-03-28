@@ -57,15 +57,20 @@ export async function validateImageUrls(
     }
   }
 
-  // Apply validation results to all results
+  // Apply validation results to all results.
+  // Only downgrade imageAvailable if the URL is clearly absent.
+  // A HEAD timeout does NOT mean the image is unavailable — many academic
+  // servers (Gallica, BVMM) are slow or don't support HEAD. If the adapter
+  // already found a real URL, trust it.
   for (const r of results) {
     const url = r.iiifManifest;
     if (!url || url === "N/A" || url.trim() === "") {
       r.imageAvailable = false;
-    } else if (cache.has(url)) {
-      r.imageAvailable = cache.get(url)!;
+    } else if (cache.has(url) && cache.get(url)!) {
+      // Confirmed available — upgrade to true
+      r.imageAvailable = true;
     }
-    // If URL was not validated (exceeded cap), keep default (true)
+    // If validation failed/timed out but URL exists, keep adapter's decision
   }
 
   return results;
