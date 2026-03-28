@@ -82,4 +82,9 @@ describe("mapRismToResult", () => {
     );
     expect(result.sourceUrl).toBe("https://rism.online/sources/999");
   });
+
+  it("always sets imageAvailable=false (RISM never provides image URLs)", () => {
+    const result = mapRismToResult(makeItem());
+    expect(result.imageAvailable).toBe(false);
+  });
 });

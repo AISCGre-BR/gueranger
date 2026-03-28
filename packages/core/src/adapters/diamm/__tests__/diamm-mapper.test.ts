@@ -146,4 +146,36 @@ describe("mapDiammToResult", () => {
 
     expect(result.siglum).toBe("F-CHM 27");
   });
+
+  it("sets imageAvailable=true when manifest_url is present", () => {
+    const source = makeSourceDetail({
+      manifest_url: "https://api.irht.cnrs.fr/ark:/12345/manifest.json",
+    });
+    const result = mapDiammToResult(
+      source,
+      { heading: "Test", title: "Test" },
+      {},
+    );
+    expect(result.imageAvailable).toBe(true);
+  });
+
+  it("sets imageAvailable=true when falling back to links array", () => {
+    const source = makeSourceDetail({ manifest_url: "" });
+    const result = mapDiammToResult(
+      source,
+      { heading: "Test", title: "Test" },
+      {},
+    );
+    expect(result.imageAvailable).toBe(true);
+  });
+
+  it("sets imageAvailable=false when no manifest available", () => {
+    const source = makeSourceDetail({ manifest_url: "", links: [] });
+    const result = mapDiammToResult(
+      source,
+      { heading: "Test", title: "Test" },
+      {},
+    );
+    expect(result.imageAvailable).toBe(false);
+  });
 });

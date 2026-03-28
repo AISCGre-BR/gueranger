@@ -2,6 +2,7 @@ import type { ManuscriptResult } from "../../models/manuscript-result.js";
 import type { CantusIndexChant, CantusDbMelodyItem } from "./cantus-types.js";
 import { genreCodeToName } from "./genre-codes.js";
 import { dbCodeToName } from "./db-codes.js";
+import { hasImageUrl } from "../../utils/image-utils.js";
 
 /**
  * Maps a raw Cantus Index chant object (from /json-cid/ response) to a ManuscriptResult.
@@ -32,7 +33,7 @@ export function mapCantusIndexChantToResult(
     sourceUrl: chant.chantlink || chant.srclink || "N/A",
     sourceDatabase: dbCodeToName(chant.db || ""),
     matchType: "text",
-    imageAvailable: true,
+    imageAvailable: false,
   };
 }
 
@@ -70,6 +71,6 @@ export function mapCantusDbMelodyToResult(
     sourceUrl: `https://cantusdatabase.org/id/${item.cantus_id || ""}`,
     sourceDatabase: "Cantus Database",
     matchType: "text",
-    imageAvailable: true,
+    imageAvailable: hasImageUrl(iiifManifest),
   };
 }

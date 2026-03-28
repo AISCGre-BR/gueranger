@@ -130,6 +130,16 @@ describe("mapCantusIndexChantToResult", () => {
     const result = mapCantusIndexChantToResult(chant, "003000");
     expect(result.century).toBe("N/A");
   });
+
+  it("always sets imageAvailable=false (Cantus Index never provides images)", () => {
+    const chant = {
+      siglum: "F-Pn lat. 1090",
+      image: "https://example.com/image.jpg",
+    };
+
+    const result = mapCantusIndexChantToResult(chant, "008248");
+    expect(result.imageAvailable).toBe(false);
+  });
 });
 
 describe("mapCantusDbMelodyToResult", () => {
@@ -182,5 +192,30 @@ describe("mapCantusDbMelodyToResult", () => {
 
     const result = mapCantusDbMelodyToResult(item, "override");
     expect(result.cantusId).toBe("override");
+  });
+
+  it("sets imageAvailable=true when imageLink is a valid URL", () => {
+    const item = { id: 1 };
+    const result = mapCantusDbMelodyToResult(
+      item,
+      "008407",
+      "https://cantus.example.com/image.jpg",
+    );
+    expect(result.imageAvailable).toBe(true);
+  });
+
+  it("sets imageAvailable=false when imageLink is N/A", () => {
+    const item = { id: 1 };
+    const result = mapCantusDbMelodyToResult(item, "008407", "N/A");
+    expect(result.imageAvailable).toBe(false);
+  });
+
+  it("sets imageAvailable=false when imageLink is empty or undefined", () => {
+    const item = { id: 1 };
+    const result = mapCantusDbMelodyToResult(item, "008407", "");
+    expect(result.imageAvailable).toBe(false);
+
+    const result2 = mapCantusDbMelodyToResult(item, "008407", undefined);
+    expect(result2.imageAvailable).toBe(false);
   });
 });

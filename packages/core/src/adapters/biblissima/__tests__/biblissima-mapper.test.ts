@@ -70,4 +70,25 @@ describe("mapBiblissimaToResult", () => {
     expect(result.library).toBe("Unknown Manuscript");
     expect(result.siglum).toBe("Unknown Manuscript");
   });
+
+  it("sets imageAvailable=true when iiifManifestUrl is a valid URL", () => {
+    const result = mapBiblissimaToResult(
+      makeItem({
+        iiifManifestUrl: "https://gallica.bnf.fr/iiif/manifest.json",
+      }),
+    );
+    expect(result.imageAvailable).toBe(true);
+  });
+
+  it("sets imageAvailable=false when iiifManifestUrl is empty or undefined", () => {
+    const result = mapBiblissimaToResult(
+      makeItem({ iiifManifestUrl: "" }),
+    );
+    expect(result.imageAvailable).toBe(false);
+
+    const result2 = mapBiblissimaToResult(
+      makeItem({ iiifManifestUrl: undefined }),
+    );
+    expect(result2.imageAvailable).toBe(false);
+  });
 });

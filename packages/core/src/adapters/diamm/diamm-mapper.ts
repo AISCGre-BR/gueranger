@@ -1,5 +1,6 @@
 import type { ManuscriptResult } from "../../models/manuscript-result.js";
 import type { DiammSourceDetail } from "./diamm-types.js";
+import { hasImageUrl } from "../../utils/image-utils.js";
 
 /**
  * Maps a DIAMM source detail + composition info to a ManuscriptResult.
@@ -68,6 +69,6 @@ export function mapDiammToResult(
     sourceUrl: `https://www.diamm.ac.uk/sources/${source.pk}/`,
     sourceDatabase: "DIAMM",
     matchType: "text",
-    imageAvailable: true,
+    imageAvailable: hasImageUrl(iiifManifest),
   };
 }

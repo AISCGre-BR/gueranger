@@ -75,4 +75,28 @@ describe("mapMmmoToResult", () => {
     const result = mapMmmoToResult(makeChantResult({ chantId: "99001" }));
     expect(result.sourceUrl).toBe("https://musmed.eu/chant/99001");
   });
+
+  it("sets imageAvailable=true when imageUrl is a valid URL", () => {
+    const result = mapMmmoToResult(
+      makeChantResult({
+        imageUrl: "https://bvmm.irht.cnrs.fr/iiif/223/canvas/canvas-151914/view",
+      }),
+    );
+    expect(result.imageAvailable).toBe(true);
+  });
+
+  it("sets imageAvailable=false when imageUrl is N/A", () => {
+    const result = mapMmmoToResult(makeChantResult({ imageUrl: "N/A" }));
+    expect(result.imageAvailable).toBe(false);
+  });
+
+  it("sets imageAvailable=false when imageUrl is empty", () => {
+    const result = mapMmmoToResult(makeChantResult({ imageUrl: "" }));
+    expect(result.imageAvailable).toBe(false);
+  });
+
+  it("sets imageAvailable=false when imageUrl is undefined", () => {
+    const result = mapMmmoToResult(makeChantResult({ imageUrl: undefined }));
+    expect(result.imageAvailable).toBe(false);
+  });
 });

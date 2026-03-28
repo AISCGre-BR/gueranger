@@ -1,5 +1,6 @@
 import type { ManuscriptResult } from "../../models/manuscript-result.js";
 import type { BiblissimaSearchResult } from "./biblissima-types.js";
+import { hasImageUrl } from "../../utils/image-utils.js";
 
 /**
  * Parses a Biblissima title into city and library components.
@@ -60,6 +61,6 @@ export function mapBiblissimaToResult(
     sourceUrl: item.biblissimaUrl || "N/A",
     sourceDatabase: "Biblissima",
     matchType: "text",
-    imageAvailable: true,
+    imageAvailable: hasImageUrl(item.iiifManifestUrl),
   };
 }

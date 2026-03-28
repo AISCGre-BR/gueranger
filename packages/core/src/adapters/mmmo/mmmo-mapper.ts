@@ -1,5 +1,6 @@
 import type { ManuscriptResult } from "../../models/manuscript-result.js";
 import type { MmmoChantResult } from "./mmmo-types.js";
+import { hasImageUrl } from "../../utils/image-utils.js";
 
 /**
  * Maps an MMMO chant detail result to a ManuscriptResult.
@@ -24,6 +25,6 @@ export function mapMmmoToResult(item: MmmoChantResult): ManuscriptResult {
     sourceUrl: `https://musmed.eu/chant/${item.chantId}`,
     sourceDatabase: "MMMO",
     matchType: "text",
-    imageAvailable: true,
+    imageAvailable: hasImageUrl(item.imageUrl),
   };
 }
