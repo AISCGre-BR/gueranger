@@ -1,11 +1,11 @@
-import { app, BrowserWindow, ipcMain } from "electron";
+import { app, BrowserWindow, ipcMain, shell } from "electron";
 import { join } from "node:path";
 import { handleSearch } from "@gueranger/core";
 
 function createWindow(): void {
   const win = new BrowserWindow({
-    width: 900,
-    height: 700,
+    width: 1280,
+    height: 800,
     webPreferences: {
       preload: join(__dirname, "../preload/index.js"),
       sandbox: true,
@@ -28,6 +28,10 @@ ipcMain.handle("search:execute", async (_event, params) => {
     console.error("[search:execute] Error:", err);
     throw err;
   }
+});
+
+ipcMain.handle("shell:open-external", async (_event, url: string) => {
+  await shell.openExternal(url);
 });
 
 app.whenReady().then(createWindow);
