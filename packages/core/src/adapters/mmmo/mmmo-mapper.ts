@@ -10,12 +10,12 @@ import { hasImageUrl } from "../../utils/image-utils.js";
  * page). Dedup merge with Cantus/RISM fills these gaps for
  * overlapping manuscripts.
  */
-export function mapMmmoToResult(item: MmmoChantResult): ManuscriptResult {
+export function mapMmmoToResult(item: MmmoChantResult, century?: string): ManuscriptResult {
   return {
     siglum: item.source || "N/A",
     library: "N/A",
     city: "N/A",
-    century: "N/A",
+    century: century || "N/A",
     incipit: item.fullText || "N/A",
     genre: item.genre || "N/A",
     feast: item.feast || "N/A",

@@ -1,6 +1,6 @@
 import { createColumnHelper } from "@tanstack/react-table";
 import { useTranslation } from "react-i18next";
-import { ExternalLink, ArrowUpDown, ChevronUp, ChevronDown } from "lucide-react";
+import { ExternalLink, ArrowUpDown, ChevronUp, ChevronDown, Image } from "lucide-react";
 
 /** ManuscriptResult type matching the IPC response shape. */
 export interface ManuscriptRow {
@@ -49,43 +49,86 @@ export function useColumns() {
         />
       ),
       size: 40,
+      enableResizing: false,
     }),
     col.accessor("siglum", {
       header: t("table.siglum"),
-      size: 120,
+      size: 150,
+      minSize: 80,
     }),
     col.accessor("library", {
       header: t("table.library"),
-      size: 180,
+      size: 200,
+      minSize: 80,
     }),
     col.accessor("city", {
       header: t("table.city"),
       size: 100,
+      minSize: 60,
     }),
     col.accessor("century", {
       header: t("table.century"),
-      size: 80,
+      size: 70,
+      minSize: 50,
     }),
     col.accessor("incipit", {
       header: t("table.incipit"),
-      size: 200,
+      size: 280,
+      minSize: 100,
     }),
     col.accessor("genre", {
       header: t("table.genre"),
       size: 100,
+      minSize: 60,
     }),
     col.accessor("feast", {
       header: t("table.feast"),
-      size: 120,
+      size: 140,
+      minSize: 60,
     }),
     col.accessor("folio", {
       header: t("table.folio"),
       size: 60,
+      minSize: 40,
+    }),
+    // Image column — link when available, dash with tooltip when not
+    col.accessor("iiifManifest", {
+      header: t("table.image"),
+      size: 80,
+      minSize: 60,
+      cell: ({ row }) => {
+        const url = row.original.iiifManifest;
+        const hasUrl = url && url !== "N/A" && url.trim() !== "";
+        if (hasUrl) {
+          // For IIIF manifests (JSON), link to the source page instead (has embedded viewer)
+          const viewUrl = url.endsWith(".json") || url.includes("/manifest")
+            ? row.original.sourceUrl
+            : url;
+          return (
+            <button
+              onClick={() => window.gueranger.openExternal(viewUrl)}
+              className="flex cursor-pointer items-center gap-1 text-blue-500 hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-300 transition-colors"
+            >
+              <Image className="h-3.5 w-3.5" />
+              <span className="text-xs">{t("table.imageOpen")}</span>
+            </button>
+          );
+        }
+        return (
+          <span
+            className="text-slate-300 dark:text-slate-600 cursor-help"
+            title={t("table.imageTooltip")}
+          >
+            –
+          </span>
+        );
+      },
     }),
     // Source column with explicit link (D-08, UX-02)
     col.accessor("sourceDatabase", {
       header: t("table.source"),
-      size: 180,
+      size: 190,
+      minSize: 100,
       cell: ({ row }) => (
         <div className="flex items-center gap-2">
           <span>{row.original.sourceDatabase}</span>
@@ -94,7 +137,7 @@ export function useColumns() {
               onClick={() => window.gueranger.openExternal(row.original.sourceUrl)}
               title={t("table.openInBrowser", { source: row.original.sourceDatabase })}
               aria-label={t("table.openInBrowser", { source: row.original.sourceDatabase })}
-              className="flex items-center gap-1 text-blue-500 hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-300 transition-colors"
+              className="flex cursor-pointer items-center gap-1 text-blue-500 hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-300 transition-colors"
             >
               <ExternalLink className="h-3.5 w-3.5" />
               <span className="text-xs">Link</span>
@@ -106,6 +149,7 @@ export function useColumns() {
     col.accessor("matchType", {
       header: t("table.match"),
       size: 80,
+      minSize: 60,
       cell: ({ getValue }) => {
         const val = getValue();
         return <span>{t(`table.matchType.${val}`)}</span>;

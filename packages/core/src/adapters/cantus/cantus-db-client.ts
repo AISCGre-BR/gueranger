@@ -1,9 +1,12 @@
 import { createRateLimiter, fetchWithRetry } from "../../utils/http-client.js";
 import { volpianoToNotes } from "./volpiano.js";
 import type { CantusDbMelodyResponse } from "./cantus-types.js";
-import { CantusDbChantDetailSchema, type CantusDbChantDetail } from "./cantus-types.js";
+import { CantusDbChantDetailSchema, type CantusDbChantDetail, CantusDbSourceDetailSchema } from "./cantus-types.js";
 
 const CANTUS_DB_BASE = "https://cantusdatabase.org";
+
+/** Cache source century by source_id to avoid duplicate fetches */
+const sourceCenturyCache = new Map<number, string>();
 
 /** Rate limiter for CantusDB: max 1 concurrent, 1 req/2sec */
 const limiter = createRateLimiter({ maxConcurrent: 1, minTime: 2000 });
@@ -69,5 +72,34 @@ export async function fetchChantDetail(
   } catch (error) {
     console.error("[CantusDbClient] fetchChantDetail error:", error);
     return null;
+  }
+}
+
+/**
+ * Fetches century from a CantusDB source record.
+ * Parses the `date` field (a year like "1295") into a century string.
+ * Cached per source_id.
+ */
+export async function fetchSourceCentury(
+  sourceId: number,
+): Promise<string> {
+  if (sourceCenturyCache.has(sourceId)) return sourceCenturyCache.get(sourceId)!;
+
+  try {
+    const url = `${CANTUS_DB_BASE}/json-node/${sourceId}`;
+    const data = await fetchWithRetry(url, { limiter, timeout: 5000 });
+    const parsed = CantusDbSourceDetailSchema.safeParse(data);
+    let century = "N/A";
+    if (parsed.success && parsed.data.date) {
+      const year = parseInt(parsed.data.date, 10);
+      if (!isNaN(year) && year > 0) {
+        century = String(Math.ceil(year / 100));
+      }
+    }
+    sourceCenturyCache.set(sourceId, century);
+    return century;
+  } catch {
+    sourceCenturyCache.set(sourceId, "N/A");
+    return "N/A";
   }
 }

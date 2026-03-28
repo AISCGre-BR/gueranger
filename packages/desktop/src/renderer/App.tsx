@@ -6,7 +6,9 @@ import { LanguageSwitcher } from "./components/LanguageSwitcher";
 import { ThemeToggle } from "./components/ThemeToggle";
 import { useSearch } from "./hooks/useSearch";
 import { useSettings } from "./hooks/useSettings";
-import { Loader2, Search, SearchX } from "lucide-react";
+import { Search, SearchX } from "lucide-react";
+import { SearchProgress } from "./components/SearchProgress";
+import iconUrl from "./assets/icon.png";
 
 function App() {
   const { t } = useTranslation();
@@ -16,6 +18,7 @@ function App() {
     warnings,
     sourcesSucceeded,
     sourcesFailed,
+    sourceStatus,
     loading,
     error,
     searchedQuery,
@@ -26,12 +29,15 @@ function App() {
 
   return (
     <div className="min-h-screen bg-white dark:bg-slate-900">
-      <div className="mx-auto max-w-[1280px] px-12 pt-8 pb-12">
+      <div className="mx-auto px-8 pt-8 pb-12">
         {/* Header toolbar */}
         <div className="mb-6 flex items-center justify-between">
-          <h1 className="text-xl font-semibold text-slate-800 dark:text-slate-100">
-            {t("app.title")}
-          </h1>
+          <div className="flex items-center gap-3">
+            <img src={iconUrl} alt="" className="h-8 w-8" />
+            <h1 className="text-xl font-semibold text-slate-800 dark:text-slate-100">
+              {t("app.title")}
+            </h1>
+          </div>
           <div className="flex items-center gap-2">
             <LanguageSwitcher language={language} onChangeLanguage={setLanguage} />
             <ThemeToggle theme={theme} onChangeTheme={setTheme} />
@@ -45,16 +51,7 @@ function App() {
         <div className="mt-8">
           {/* Loading state (D-13) */}
           {loading && (
-            <div className="flex min-h-[200px] flex-col items-center justify-center rounded-lg border border-slate-200 bg-white shadow-sm dark:bg-slate-800 dark:border-slate-700">
-              <Loader2
-                className="h-6 w-6 animate-spin text-blue-600"
-                role="status"
-                aria-label={t("search.searching")}
-              />
-              <p className="mt-3 text-sm text-slate-500 dark:text-slate-400">
-                {t("search.searching")}
-              </p>
-            </div>
+            <SearchProgress sourceStatus={sourceStatus} />
           )}
 
           {/* Error state */}

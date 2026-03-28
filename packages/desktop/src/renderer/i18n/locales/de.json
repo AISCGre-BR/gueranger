@@ -39,9 +39,10 @@
       "both": "Beides"
     },
     "image": "Bild",
+    "imageOpen": "Ansehen",
     "imageDetected": "Erkannt",
     "imageNotFound": "Nicht gefunden",
-    "imageTooltip": "Ob eine Bild-URL per API-Prüfung erreichbar war. Fehlende Angabe bestätigt nicht, dass kein Bild verfügbar ist.",
+    "imageTooltip": "Kein direkter Bildlink gefunden. Das bedeutet nicht, dass die Quelle keine digitalisierten Bilder hat — prüfen Sie die Quellwebsite.",
     "selectedOf": "{{selected}} von {{total}} ausgewählt",
     "resultsFrom": "Ergebnisse von: {{sources}}",
     "openInBrowser": "{{source}} im Browser öffnen"

@@ -39,9 +39,10 @@
       "both": "Ambos"
     },
     "image": "Imagem",
+    "imageOpen": "Ver",
     "imageDetected": "Detectada",
     "imageNotFound": "Não encontrada",
-    "imageTooltip": "Se uma URL de imagem foi acessível via verificação de API. Ausência não confirma que a imagem está indisponível.",
+    "imageTooltip": "Nenhum link direto de imagem encontrado. Isso não significa que a fonte não possui imagens digitalizadas — consulte o site da fonte.",
     "selectedOf": "{{selected}} de {{total}} selecionados",
     "resultsFrom": "Resultados de: {{sources}}",
     "openInBrowser": "Abrir {{source}} no navegador"

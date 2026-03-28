@@ -4,7 +4,7 @@ export type { SearchParams, SearchResponse } from "./search/handle-search.js";
 
 // Orchestrator
 export { multiSearch, getActiveAdapters } from "./orchestrator/multi-search.js";
-export type { MultiSearchResult } from "./orchestrator/multi-search.js";
+export type { MultiSearchResult, SourceProgressCallback } from "./orchestrator/multi-search.js";
 
 // Models
 export type { SearchQuery } from "./models/query.js";

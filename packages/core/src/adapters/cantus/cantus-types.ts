@@ -43,9 +43,16 @@ export type CantusIndexCidResponse = z.infer<
 export const CantusDbChantDetailSchema = z.object({
   id: z.number().optional(),
   image_link: z.string().nullable().optional(),
-  source: z.object({ id: z.number().optional() }).optional(),
+  source_id: z.number().nullable().optional(),
 }).passthrough();
 export type CantusDbChantDetail = z.infer<typeof CantusDbChantDetailSchema>;
+
+/** Source detail from /json-node/{source_id} — used for century enrichment */
+export const CantusDbSourceDetailSchema = z.object({
+  id: z.number().optional(),
+  date: z.string().nullable().optional(),
+}).passthrough();
+export type CantusDbSourceDetail = z.infer<typeof CantusDbSourceDetailSchema>;
 
 // --- CantusDB API response schemas ---
 

@@ -59,6 +59,9 @@ export function parseChantDetail(html: string): MmmoChantResult | null {
   // If no source found, this page has no structured chant data
   if (!source) return null;
 
+  // Extract source page path (e.g. "/source/14311") for century lookup
+  const sourceHref = sourceEl.find("a").first().attr("href") ?? "";
+
   // Extract folio
   const folio =
     $(".field-name-field-folio .field-item").first().text().trim() || "N/A";
@@ -127,6 +130,7 @@ export function parseChantDetail(html: string): MmmoChantResult | null {
   const raw = {
     chantId,
     source,
+    sourcePath: sourceHref,
     folio,
     feast,
     genre,
@@ -138,6 +142,64 @@ export function parseChantDetail(html: string): MmmoChantResult | null {
 
   const parsed = MmmoChantResultSchema.safeParse(raw);
   return parsed.success ? parsed.data : null;
+}
+
+/**
+ * Parses century from an MMMO source page.
+ * Century is in a definition-list style field, e.g. "Century: X" with a link to /century/{id}.
+ */
+export function parseSourceCentury(html: string): string {
+  const $ = cheerio.load(html);
+  // Try the century link first (e.g. <a href="/century/17">X</a>)
+  const centuryLink = $('a[href*="/century/"]').first().text().trim();
+  if (centuryLink) return centuryLink;
+  // Fallback: look for "Century" label in dt/dd pairs
+  let century = "";
+  $("dt").each((_, el) => {
+    if ($(el).text().includes("Century")) {
+      century = $(el).next("dd").text().trim();
+    }
+  });
+  return century || "N/A";
+}
+
+/**
+ * Fetches century from an MMMO source page. Cached per source path.
+ */
+const sourceCenturyCache = new Map<string, string>();
+
+export async function fetchSourceCentury(
+  sourcePath: string,
+  limiter: Bottleneck,
+): Promise<string> {
+  if (!sourcePath || !sourcePath.startsWith("/source/")) return "N/A";
+  if (sourceCenturyCache.has(sourcePath)) return sourceCenturyCache.get(sourcePath)!;
+
+  const url = `${MMMO_BASE}${sourcePath}`;
+  const doFetch = async () => {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 15000);
+    try {
+      const response = await fetch(url, { signal: controller.signal });
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      return await response.text();
+    } finally {
+      clearTimeout(timeoutId);
+    }
+  };
+
+  try {
+    const html = await pRetry(() => limiter.schedule(doFetch), {
+      retries: 1,
+      minTimeout: 1000,
+    });
+    const century = parseSourceCentury(html);
+    sourceCenturyCache.set(sourcePath, century);
+    return century;
+  } catch {
+    sourceCenturyCache.set(sourcePath, "N/A");
+    return "N/A";
+  }
 }
 
 /**

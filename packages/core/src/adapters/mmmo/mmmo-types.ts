@@ -14,6 +14,7 @@ export type MmmoSearchHit = z.infer<typeof MmmoSearchHitSchema>;
 export const MmmoChantResultSchema = z.object({
   chantId: z.string(),
   source: z.string(),
+  sourcePath: z.string(),
   folio: z.string(),
   feast: z.string(),
   genre: z.string(),

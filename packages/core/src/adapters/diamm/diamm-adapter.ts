@@ -71,16 +71,26 @@ export class DiammAdapter implements SourceAdapter {
       }> = [];
 
       for (const comp of compositions) {
-        for (const srcRef of comp.sources) {
-          // Extract PK from URL (e.g., "/sources/4871/?format=json" -> "4871")
-          const pkMatch = srcRef.url.match(/\/sources\/(\d+)\//);
-          if (pkMatch) {
+        // sources can be: array of objects, array of numbers, or a single number
+        const rawSources = comp.sources;
+        const sourceList = typeof rawSources === "number" ? [rawSources] : rawSources;
+
+        for (const srcRef of sourceList) {
+          if (typeof srcRef === "number") {
             sourceRefs.push({
-              pk: pkMatch[1],
+              pk: String(srcRef),
               composition: { heading: comp.heading, title: comp.title },
-              folio_start: srcRef.folio_start,
-              folio_end: srcRef.folio_end,
             });
+          } else {
+            const pkMatch = srcRef.url.match(/\/sources\/(\d+)\//);
+            if (pkMatch) {
+              sourceRefs.push({
+                pk: pkMatch[1],
+                composition: { heading: comp.heading, title: comp.title },
+                folio_start: srcRef.folio_start,
+                folio_end: srcRef.folio_end,
+              });
+            }
           }
         }
       }

@@ -39,9 +39,10 @@
       "both": "Entrambi"
     },
     "image": "Immagine",
+    "imageOpen": "Vedere",
     "imageDetected": "Rilevata",
     "imageNotFound": "Non trovata",
-    "imageTooltip": "Se un URL immagine era accessibile tramite controllo API. L'assenza non conferma che l'immagine non sia disponibile.",
+    "imageTooltip": "Nessun link diretto all'immagine trovato. Ciò non significa che la fonte non abbia immagini digitalizzate — consultare il sito della fonte.",
     "selectedOf": "{{selected}} di {{total}} selezionati",
     "resultsFrom": "Risultati da: {{sources}}",
     "openInBrowser": "Apri {{source}} nel browser"

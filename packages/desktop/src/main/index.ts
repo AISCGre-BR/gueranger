@@ -5,8 +5,9 @@ import { initializeTheme, registerSettingsHandlers } from "./settings";
 
 function createWindow(): void {
   const win = new BrowserWindow({
-    width: 1280,
-    height: 800,
+    width: 1600,
+    height: 900,
+    icon: join(__dirname, "../../resources/icon.png"),
     webPreferences: {
       preload: join(__dirname, "../preload/index.js"),
       sandbox: true,
@@ -22,9 +23,11 @@ function createWindow(): void {
   }
 }
 
-ipcMain.handle("search:execute", async (_event, params) => {
+ipcMain.handle("search:execute", async (event, params) => {
   try {
-    return await handleSearch(params);
+    return await handleSearch(params, (name, status) => {
+      event.sender.send("search:source-progress", { name, status });
+    });
   } catch (err) {
     console.error("[search:execute] Error:", err);
     throw err;

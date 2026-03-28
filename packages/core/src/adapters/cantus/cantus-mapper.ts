@@ -47,6 +47,7 @@ export function mapCantusDbMelodyToResult(
   item: CantusDbMelodyItem,
   cantusId?: string,
   imageLink?: string,
+  century?: string,
 ): ManuscriptResult {
   // Use imageLink from detail endpoint when it's a real value (not empty, not "N/A")
   const iiifManifest =
@@ -61,14 +62,14 @@ export function mapCantusDbMelodyToResult(
         .join(" ") || "N/A",
     library: "N/A",
     city: "N/A",
-    century: "N/A",
+    century: century || "N/A",
     incipit: item.incipit || "N/A",
     genre: item.genre__name ? genreCodeToName(item.genre__name) : "N/A",
     feast: item.feast__name || "N/A",
     folio: item.folio || "N/A",
     cantusId: cantusId || item.cantus_id || "N/A",
     iiifManifest,
-    sourceUrl: `https://cantusdatabase.org/id/${item.cantus_id || ""}`,
+    sourceUrl: `https://cantusdatabase.org/chant/${item.id}`,
     sourceDatabase: "Cantus Database",
     matchType: "text",
     imageAvailable: hasImageUrl(iiifManifest),

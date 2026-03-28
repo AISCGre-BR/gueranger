@@ -2,7 +2,7 @@ import { normalizeLatinText } from "../normalizer/latin.js";
 import { isGabc, gabcToVolpiano } from "../converters/gabc-to-volpiano.js";
 import { multiSearch, getActiveAdapters } from "../orchestrator/multi-search.js";
 import type { SearchQuery } from "../models/query.js";
-import type { MultiSearchResult } from "../orchestrator/multi-search.js";
+import type { MultiSearchResult, SourceProgressCallback } from "../orchestrator/multi-search.js";
 
 export interface SearchParams {
   query: string;
@@ -14,7 +14,10 @@ export interface SearchParams {
 
 export type SearchResponse = MultiSearchResult;
 
-export async function handleSearch(params: SearchParams): Promise<SearchResponse> {
+export async function handleSearch(
+  params: SearchParams,
+  onSourceProgress?: SourceProgressCallback,
+): Promise<SearchResponse> {
   const adapters = getActiveAdapters();
   const resolvedMelody = params.melody
     ? isGabc(params.melody)
@@ -29,5 +32,5 @@ export async function handleSearch(params: SearchParams): Promise<SearchResponse
     feast: params.feast,
     melody: resolvedMelody,
   };
-  return multiSearch(adapters, searchQuery);
+  return multiSearch(adapters, searchQuery, undefined, onSourceProgress);
 }

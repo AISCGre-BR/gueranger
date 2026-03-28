@@ -18,7 +18,7 @@ export const DiammSearchResultSchema = z.object({
   heading: z.string(),
   type: z.string().optional(),
   title: z.string(),
-  sources: z.array(DiammSearchSourceRefSchema),
+  sources: z.union([z.array(DiammSearchSourceRefSchema), z.array(z.number()), z.number()]),
 });
 export type DiammSearchResult = z.infer<typeof DiammSearchResultSchema>;
 

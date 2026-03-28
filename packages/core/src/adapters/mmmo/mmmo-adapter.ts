@@ -2,7 +2,7 @@ import type { SourceAdapter } from "../adapter.interface.js";
 import type { SearchQuery } from "../../models/query.js";
 import type { ManuscriptResult } from "../../models/manuscript-result.js";
 import { createRateLimiter } from "../../utils/http-client.js";
-import { searchMmmo, fetchChantDetail } from "./mmmo-client.js";
+import { searchMmmo, fetchChantDetail, fetchSourceCentury } from "./mmmo-client.js";
 import { mapMmmoToResult } from "./mmmo-mapper.js";
 import type { MmmoChantResult } from "./mmmo-types.js";
 
@@ -32,9 +32,21 @@ export class MmmoAdapter implements SourceAdapter {
         hits.map((hit) => fetchChantDetail(hit.chantId, this.limiter)),
       );
 
-      return details
-        .filter((d): d is MmmoChantResult => d !== null)
-        .map(mapMmmoToResult);
+      const valid = details.filter((d): d is MmmoChantResult => d !== null);
+
+      // Fetch century from source pages (cached, so duplicate sources cost 1 request)
+      const uniquePaths = [...new Set(valid.map((d) => d.sourcePath).filter(Boolean))];
+      await Promise.all(uniquePaths.map((p) => fetchSourceCentury(p, this.limiter)));
+
+      // Now map with century
+      const results: ManuscriptResult[] = [];
+      for (const d of valid) {
+        const century = d.sourcePath
+          ? await fetchSourceCentury(d.sourcePath, this.limiter)
+          : "N/A";
+        results.push(mapMmmoToResult(d, century));
+      }
+      return results;
     } catch (error) {
       console.error("[MmmoAdapter] search error:", error);
       return [];

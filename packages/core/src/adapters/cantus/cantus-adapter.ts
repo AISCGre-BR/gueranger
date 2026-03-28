@@ -2,7 +2,7 @@ import type { SourceAdapter } from "../adapter.interface.js";
 import type { SearchQuery } from "../../models/query.js";
 import type { ManuscriptResult } from "../../models/manuscript-result.js";
 import { searchByText, getChantsByCid } from "./cantus-index-client.js";
-import { searchByMelody, fetchChantDetail } from "./cantus-db-client.js";
+import { searchByMelody, fetchChantDetail, fetchSourceCentury } from "./cantus-db-client.js";
 import {
   mapCantusIndexChantToResult,
   mapCantusDbMelodyToResult,
@@ -82,16 +82,26 @@ export class CantusAdapter implements SourceAdapter {
       feast: query.feast,
     });
 
-    // Enrich melody results with image_link from /json-node/ detail endpoint
+    // Enrich melody results with image_link + century from /json-node/ detail endpoint
     const items = response.results;
     const toEnrich = items.slice(0, MAX_ENRICHMENT);
     let imageLinks: (string | undefined)[] = [];
+    let centuries: (string | undefined)[] = [];
 
     try {
       const details = await Promise.all(
         toEnrich.map((item) => fetchChantDetail(item.id)),
       );
-      imageLinks = details.map((d) => d?.image_link);
+      imageLinks = details.map((d) => d?.image_link ?? undefined);
+
+      // Fetch century from source records (cached per source_id)
+      const sourceIds = details.map((d) => d?.source_id ?? null);
+      const uniqueSourceIds = [...new Set(sourceIds.filter((id): id is number => id != null))];
+      await Promise.all(uniqueSourceIds.map((id) => fetchSourceCentury(id)));
+      centuries = await Promise.all(
+        sourceIds.map((id) => (id != null ? fetchSourceCentury(id) : Promise.resolve(undefined))),
+      );
+
       const enrichedCount = imageLinks.filter(Boolean).length;
       if (enrichedCount > 0) {
         console.log(
@@ -103,7 +113,7 @@ export class CantusAdapter implements SourceAdapter {
     }
 
     let results = items.map((item, i) =>
-      mapCantusDbMelodyToResult(item, item.cantus_id, imageLinks[i]),
+      mapCantusDbMelodyToResult(item, item.cantus_id, imageLinks[i], centuries[i]),
     );
 
     // Century filter is applied client-side (CantusDB melody search doesn't support it)

@@ -10,6 +10,7 @@ import { MmmoAdapter } from "../adapters/mmmo/mmmo-adapter.js";
 import { deduplicateResults } from "./deduplicator.js";
 import { enrichWithCanvasLinks } from "./iiif-enrichment.js";
 import { validateImageUrls } from "../utils/image-validator.js";
+import { parseCentury } from "../utils/century-parser.js";
 
 export interface MultiSearchResult {
   results: ManuscriptResult[];
@@ -50,10 +51,13 @@ function withTimeout<T>(promise: Promise<T>, ms: number): Promise<T> {
  * error message is used as the warning (not prefixed with adapter name).
  * Results are deduplicated before returning.
  */
+export type SourceProgressCallback = (name: string, status: "ok" | "fail") => void;
+
 export async function multiSearch(
   adapters: SourceAdapter[],
   query: SearchQuery,
-  timeoutMs = 30000,
+  timeoutMs = 60000,
+  onSourceProgress?: SourceProgressCallback,
 ): Promise<MultiSearchResult> {
   const sourcesQueried = adapters.map((a) => a.name);
   const sourcesSucceeded: string[] = [];
@@ -62,7 +66,18 @@ export async function multiSearch(
   const allResults: ManuscriptResult[] = [];
 
   const settled = await Promise.allSettled(
-    adapters.map((adapter) => withTimeout(adapter.search(query), timeoutMs)),
+    adapters.map((adapter) =>
+      withTimeout(adapter.search(query), timeoutMs).then(
+        (results) => {
+          onSourceProgress?.(adapter.name, "ok");
+          return results;
+        },
+        (error) => {
+          onSourceProgress?.(adapter.name, "fail");
+          throw error;
+        },
+      ),
+    ),
   );
 
   for (let i = 0; i < settled.length; i++) {
@@ -87,7 +102,18 @@ export async function multiSearch(
 
   const deduplicated = deduplicateResults(allResults);
   const enriched = await enrichWithCanvasLinks(deduplicated);
-  const results = await validateImageUrls(enriched);
+  const validated = await validateImageUrls(enriched);
+
+  // Sort: text/both matches first, then melody-only; within each group oldest→newest
+  const matchOrder: Record<string, number> = { text: 0, both: 1, melody: 2 };
+  const results = validated.sort((a, b) => {
+    const ma = matchOrder[a.matchType ?? "text"] ?? 0;
+    const mb = matchOrder[b.matchType ?? "text"] ?? 0;
+    if (ma !== mb) return ma - mb;
+    const ca = parseCentury(a.century) ?? 99;
+    const cb = parseCentury(b.century) ?? 99;
+    return ca - cb;
+  });
 
   return {
     results,

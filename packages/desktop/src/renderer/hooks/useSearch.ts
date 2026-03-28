@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect, useRef } from "react";
 import i18n from "../i18n";
 import type { ManuscriptRow } from "../lib/columns";
 
@@ -13,6 +13,8 @@ export interface SearchState {
   searchedQuery: string;
   hasSearched: boolean;
 }
+
+export type SourceStatus = Record<string, "pending" | "ok" | "fail">;
 
 const INITIAL_STATE: SearchState = {
   results: [],
@@ -41,25 +43,48 @@ export function extractTextFromGabc(gabc: string): string {
     .trim();
 }
 
+/** Detects GABC notation — inlined to avoid importing @gueranger/core in the renderer bundle. */
+function isGabc(input: string): boolean {
+  if (!input) return false;
+  if (/\([cf]b?[1-4]/.test(input)) return true;
+  const noteGroups = input.match(/\([a-m]/g);
+  return noteGroups !== null && noteGroups.length >= 2;
+}
+
+const SOURCES = ["Cantus Index Network", "DIAMM", "RISM Online", "Biblissima", "MMMO"];
+
 export function useSearch() {
   const [state, setState] = useState<SearchState>(INITIAL_STATE);
+  const [sourceStatus, setSourceStatus] = useState<SourceStatus>({});
+  const unsubRef = useRef<(() => void) | null>(null);
+
+  // Listen for per-source progress events from main process
+  useEffect(() => {
+    const unsub = window.gueranger.onSourceProgress((data) => {
+      setSourceStatus((prev) => ({ ...prev, [data.name]: data.status }));
+    });
+    unsubRef.current = unsub;
+    return () => unsub();
+  }, []);
 
   const search = useCallback(async (params: SearchParams) => {
     const { query, genre, century, feast } = params;
     if (!query.trim()) return;
 
+    // Reset source status to pending
+    const initial: SourceStatus = {};
+    for (const s of SOURCES) initial[s] = "pending";
+    setSourceStatus(initial);
+
     setState((prev) => ({ ...prev, loading: true, error: null, searchedQuery: query }));
 
     try {
-      // Smart GABC detection (D-02): if input contains GABC, extract text + melody
       let searchQuery = query;
       let melody: string | undefined;
 
-      // Import isGabc from core (pure TS, no Node deps -- bundled by Vite)
-      const { isGabc } = await import("@gueranger/core");
       if (isGabc(query)) {
         searchQuery = extractTextFromGabc(query);
-        melody = query; // Pass raw GABC -- core's handleSearch converts via gabcToVolpiano
+        melody = query;
       }
 
       const response = await window.gueranger.search({
@@ -95,7 +120,8 @@ export function useSearch() {
 
   const reset = useCallback(() => {
     setState(INITIAL_STATE);
+    setSourceStatus({});
   }, []);
 
-  return { ...state, search, reset };
+  return { ...state, sourceStatus, search, reset };
 }
