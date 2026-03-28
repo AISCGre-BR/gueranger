@@ -58,20 +58,17 @@ export function SearchForm({ onSearch, onClear, loading }: Props) {
           <label htmlFor="genre" className="mb-1 block text-xs text-slate-500 dark:text-slate-400">
             {t("filters.genre")}
           </label>
-          <input
+          <select
             id="genre"
-            list="genre-options"
             value={genre}
             onChange={(e) => setGenre(e.target.value)}
-            onKeyDown={handleKeyDown}
-            placeholder={t("filters.genrePlaceholder")}
-            className="w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 placeholder:text-slate-400 focus:border-blue-600 focus:outline-none focus:ring-1 focus:ring-blue-600 dark:bg-slate-900 dark:border-slate-600 dark:text-slate-200 dark:placeholder:text-slate-500"
-          />
-          <datalist id="genre-options">
+            className="w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 focus:border-blue-600 focus:outline-none focus:ring-1 focus:ring-blue-600 dark:bg-slate-900 dark:border-slate-600 dark:text-slate-200"
+          >
+            <option value="">{t("filters.genrePlaceholder")}</option>
             {GENRE_OPTIONS.map((g) => (
-              <option key={g} value={g} />
+              <option key={g} value={g}>{g}</option>
             ))}
-          </datalist>
+          </select>
         </div>
 
         {/* Century dropdown (D-03) */}
@@ -79,20 +76,17 @@ export function SearchForm({ onSearch, onClear, loading }: Props) {
           <label htmlFor="century" className="mb-1 block text-xs text-slate-500 dark:text-slate-400">
             {t("filters.century")}
           </label>
-          <input
+          <select
             id="century"
-            list="century-options"
             value={century}
             onChange={(e) => setCentury(e.target.value)}
-            onKeyDown={handleKeyDown}
-            placeholder={t("filters.centuryPlaceholder")}
-            className="w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 placeholder:text-slate-400 focus:border-blue-600 focus:outline-none focus:ring-1 focus:ring-blue-600 dark:bg-slate-900 dark:border-slate-600 dark:text-slate-200 dark:placeholder:text-slate-500"
-          />
-          <datalist id="century-options">
+            className="w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 focus:border-blue-600 focus:outline-none focus:ring-1 focus:ring-blue-600 dark:bg-slate-900 dark:border-slate-600 dark:text-slate-200"
+          >
+            <option value="">{t("filters.centuryPlaceholder")}</option>
             {CENTURY_OPTIONS.map((c) => (
-              <option key={c} value={c} />
+              <option key={c} value={c}>{c}</option>
             ))}
-          </datalist>
+          </select>
         </div>
 
         {/* Feast dropdown (D-03) */}
@@ -100,20 +94,17 @@ export function SearchForm({ onSearch, onClear, loading }: Props) {
           <label htmlFor="feast" className="mb-1 block text-xs text-slate-500 dark:text-slate-400">
             {t("filters.feast")}
           </label>
-          <input
+          <select
             id="feast"
-            list="feast-options"
             value={feast}
             onChange={(e) => setFeast(e.target.value)}
-            onKeyDown={handleKeyDown}
-            placeholder={t("filters.feastPlaceholder")}
-            className="w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 placeholder:text-slate-400 focus:border-blue-600 focus:outline-none focus:ring-1 focus:ring-blue-600 dark:bg-slate-900 dark:border-slate-600 dark:text-slate-200 dark:placeholder:text-slate-500"
-          />
-          <datalist id="feast-options">
+            className="w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 focus:border-blue-600 focus:outline-none focus:ring-1 focus:ring-blue-600 dark:bg-slate-900 dark:border-slate-600 dark:text-slate-200"
+          >
+            <option value="">{t("filters.feastPlaceholder")}</option>
             {FEAST_OPTIONS.map((f) => (
-              <option key={f} value={f} />
+              <option key={f} value={f}>{f}</option>
             ))}
-          </datalist>
+          </select>
         </div>
 
         {/* Buttons (D-04, D-05) */}

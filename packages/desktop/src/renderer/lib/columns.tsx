@@ -1,6 +1,6 @@
 import { createColumnHelper } from "@tanstack/react-table";
 import { useTranslation } from "react-i18next";
-import { ExternalLink, Check, Minus, ArrowUpDown, ChevronUp, ChevronDown } from "lucide-react";
+import { ExternalLink, ArrowUpDown, ChevronUp, ChevronDown } from "lucide-react";
 
 /** ManuscriptResult type matching the IPC response shape. */
 export interface ManuscriptRow {
@@ -82,10 +82,10 @@ export function useColumns() {
       header: t("table.folio"),
       size: 60,
     }),
-    // Source column with external link button (D-08, UX-02)
+    // Source column with explicit link (D-08, UX-02)
     col.accessor("sourceDatabase", {
       header: t("table.source"),
-      size: 140,
+      size: 180,
       cell: ({ row }) => (
         <div className="flex items-center gap-2">
           <span>{row.original.sourceDatabase}</span>
@@ -94,9 +94,10 @@ export function useColumns() {
               onClick={() => window.gueranger.openExternal(row.original.sourceUrl)}
               title={t("table.openInBrowser", { source: row.original.sourceDatabase })}
               aria-label={t("table.openInBrowser", { source: row.original.sourceDatabase })}
-              className="p-1 text-slate-400 hover:text-blue-600 transition-colors"
+              className="flex items-center gap-1 text-blue-500 hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-300 transition-colors"
             >
-              <ExternalLink className="h-4 w-4" />
+              <ExternalLink className="h-3.5 w-3.5" />
+              <span className="text-xs">Link</span>
             </button>
           )}
         </div>
@@ -105,32 +106,6 @@ export function useColumns() {
     col.accessor("matchType", {
       header: t("table.match"),
       size: 80,
-    }),
-    // Image availability with honest labeling (D-07)
-    col.accessor("imageAvailable", {
-      header: t("table.image"),
-      size: 90,
-      cell: ({ getValue }) => {
-        const available = getValue();
-        return (
-          <span
-            className={`flex items-center gap-1 ${available ? "text-green-600" : "text-slate-400"}`}
-            title={t("table.imageTooltip")}
-          >
-            {available ? (
-              <>
-                <Check className="h-3.5 w-3.5" />
-                <span>{t("table.imageDetected")}</span>
-              </>
-            ) : (
-              <>
-                <Minus className="h-3.5 w-3.5" />
-                <span>{t("table.imageNotFound")}</span>
-              </>
-            )}
-          </span>
-        );
-      },
     }),
   ];
 }
