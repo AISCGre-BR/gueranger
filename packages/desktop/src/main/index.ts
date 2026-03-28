@@ -1,6 +1,7 @@
 import { app, BrowserWindow, ipcMain, shell } from "electron";
 import { join } from "node:path";
 import { handleSearch } from "@gueranger/core";
+import { initializeTheme, registerSettingsHandlers } from "./settings";
 
 function createWindow(): void {
   const win = new BrowserWindow({
@@ -34,7 +35,11 @@ ipcMain.handle("shell:open-external", async (_event, url: string) => {
   await shell.openExternal(url);
 });
 
-app.whenReady().then(createWindow);
+app.whenReady().then(() => {
+  initializeTheme();
+  registerSettingsHandlers();
+  createWindow();
+});
 
 app.on("window-all-closed", () => {
   if (process.platform !== "darwin") {

@@ -1,0 +1,59 @@
+{
+  "app": {
+    "title": "Gueranger"
+  },
+  "search": {
+    "label": "Incipit / GABC",
+    "placeholder": "Incipit latino o melodia GABC...",
+    "button": "Cerca",
+    "clear": "Cancella",
+    "searching": "Ricerca in 5 fonti...",
+    "noResults": "Nessun manoscritto trovato",
+    "noResultsHint": "Nessun risultato per \"{{query}}\". Prova un incipit piu ampio o rimuovi i filtri.",
+    "initialTitle": "Cerca manoscritti",
+    "initialHint": "Inserisci un incipit latino o melodia GABC sopra per trovare manoscritti digitalizzati su Cantus, DIAMM, RISM, Biblissima e MMMO.",
+    "error": "Ricerca fallita: {{message}}. Controlla la connessione e riprova."
+  },
+  "filters": {
+    "genre": "Genre",
+    "genrePlaceholder": "Tutti i generi",
+    "century": "Secolo",
+    "centuryPlaceholder": "Tutti i secoli",
+    "feast": "Festa",
+    "feastPlaceholder": "Tutte le feste"
+  },
+  "table": {
+    "siglum": "Siglum",
+    "library": "Biblioteca",
+    "city": "Citta",
+    "century": "Secolo",
+    "incipit": "Incipit",
+    "genre": "Genere",
+    "feast": "Festa",
+    "folio": "Folio",
+    "source": "Fonte",
+    "match": "Tipo",
+    "image": "Immagine",
+    "imageDetected": "Rilevata",
+    "imageNotFound": "Non trovata",
+    "imageTooltip": "Se un URL immagine era accessibile tramite controllo API. L'assenza non conferma che l'immagine non sia disponibile.",
+    "selectedOf": "{{selected}} di {{total}} selezionati",
+    "resultsFrom": "Risultati da: {{sources}}",
+    "openInBrowser": "Apri {{source}} nel browser"
+  },
+  "pagination": {
+    "page": "Pagina {{current}} di {{total}}",
+    "showing": "Mostrando {{start}}-{{end}} di {{total}} risultati"
+  },
+  "warnings": {
+    "sourcesUnavailable": "{{count}} fonte non disponibile",
+    "sourcesUnavailable_plural": "{{count}} fonti non disponibili"
+  },
+  "settings": {
+    "theme": "Tema",
+    "language": "Lingua",
+    "lightMode": "Passa alla modalita chiara",
+    "darkMode": "Passa alla modalita scura",
+    "systemMode": "Segui il tema di sistema"
+  }
+}

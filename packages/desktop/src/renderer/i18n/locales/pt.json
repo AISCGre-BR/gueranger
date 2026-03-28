@@ -1,0 +1,59 @@
+{
+  "app": {
+    "title": "Gueranger"
+  },
+  "search": {
+    "label": "Incipit / GABC",
+    "placeholder": "Incipit em latim ou melodia GABC...",
+    "button": "Buscar",
+    "clear": "Limpar",
+    "searching": "Buscando em 5 fontes...",
+    "noResults": "Nenhum manuscrito encontrado",
+    "noResultsHint": "Nenhum resultado para \"{{query}}\". Tente um incipit mais amplo ou remova filtros.",
+    "initialTitle": "Buscar manuscritos",
+    "initialHint": "Digite um incipit em latim ou melodia GABC acima para encontrar manuscritos digitalizados no Cantus, DIAMM, RISM, Biblissima e MMMO.",
+    "error": "Busca falhou: {{message}}. Verifique sua conexao e tente novamente."
+  },
+  "filters": {
+    "genre": "Genre",
+    "genrePlaceholder": "Todos os generos",
+    "century": "Seculo",
+    "centuryPlaceholder": "Todos os seculos",
+    "feast": "Festa",
+    "feastPlaceholder": "Todas as festas"
+  },
+  "table": {
+    "siglum": "Siglum",
+    "library": "Biblioteca",
+    "city": "Cidade",
+    "century": "Seculo",
+    "incipit": "Incipit",
+    "genre": "Genero",
+    "feast": "Festa",
+    "folio": "Folio",
+    "source": "Fonte",
+    "match": "Tipo",
+    "image": "Imagem",
+    "imageDetected": "Detectada",
+    "imageNotFound": "Nao encontrada",
+    "imageTooltip": "Se uma URL de imagem foi acessivel via verificacao de API. Ausencia nao confirma que a imagem esta indisponivel.",
+    "selectedOf": "{{selected}} de {{total}} selecionados",
+    "resultsFrom": "Resultados de: {{sources}}",
+    "openInBrowser": "Abrir {{source}} no navegador"
+  },
+  "pagination": {
+    "page": "Pagina {{current}} de {{total}}",
+    "showing": "Mostrando {{start}}-{{end}} de {{total}} resultados"
+  },
+  "warnings": {
+    "sourcesUnavailable": "{{count}} fonte indisponivel",
+    "sourcesUnavailable_plural": "{{count}} fontes indisponiveis"
+  },
+  "settings": {
+    "theme": "Tema",
+    "language": "Idioma",
+    "lightMode": "Mudar para modo claro",
+    "darkMode": "Mudar para modo escuro",
+    "systemMode": "Seguir tema do sistema"
+  }
+}

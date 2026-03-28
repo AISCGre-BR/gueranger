@@ -28,6 +28,10 @@ interface GuerangerAPI {
     sourcesSucceeded: string[];
     sourcesFailed: string[];
   }>;
+  getLanguage: () => Promise<string>;
+  setLanguage: (lang: string) => Promise<string>;
+  getTheme: () => Promise<string>;
+  setTheme: (theme: string) => Promise<boolean>;
   openExternal: (url: string) => Promise<void>;
 }
 

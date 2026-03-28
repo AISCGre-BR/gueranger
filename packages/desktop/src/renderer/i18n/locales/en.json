@@ -1,0 +1,59 @@
+{
+  "app": {
+    "title": "Gueranger"
+  },
+  "search": {
+    "label": "Incipit / GABC",
+    "placeholder": "Latin incipit or GABC melody...",
+    "button": "Search",
+    "clear": "Clear",
+    "searching": "Searching across 5 sources...",
+    "noResults": "No manuscripts found",
+    "noResultsHint": "No results for \"{{query}}\". Try a broader incipit or remove filters.",
+    "initialTitle": "Search manuscripts",
+    "initialHint": "Enter a Latin incipit or GABC melody above to find digitized manuscripts across Cantus, DIAMM, RISM, Biblissima, and MMMO.",
+    "error": "Search failed: {{message}}. Check your connection and try again."
+  },
+  "filters": {
+    "genre": "Genre",
+    "genrePlaceholder": "All genres",
+    "century": "Century",
+    "centuryPlaceholder": "All centuries",
+    "feast": "Feast",
+    "feastPlaceholder": "All feasts"
+  },
+  "table": {
+    "siglum": "Siglum",
+    "library": "Library",
+    "city": "City",
+    "century": "Century",
+    "incipit": "Incipit",
+    "genre": "Genre",
+    "feast": "Feast",
+    "folio": "Folio",
+    "source": "Source",
+    "match": "Match",
+    "image": "Image",
+    "imageDetected": "Detected",
+    "imageNotFound": "Not found",
+    "imageTooltip": "Whether an image URL was accessible via API check. Absence does not confirm the image is unavailable.",
+    "selectedOf": "{{selected}} of {{total}} selected",
+    "resultsFrom": "Results from: {{sources}}",
+    "openInBrowser": "Open {{source}} in browser"
+  },
+  "pagination": {
+    "page": "Page {{current}} of {{total}}",
+    "showing": "Showing {{start}}-{{end}} of {{total}} results"
+  },
+  "warnings": {
+    "sourcesUnavailable": "{{count}} source unavailable",
+    "sourcesUnavailable_plural": "{{count}} sources unavailable"
+  },
+  "settings": {
+    "theme": "Theme",
+    "language": "Language",
+    "lightMode": "Switch to light mode",
+    "darkMode": "Switch to dark mode",
+    "systemMode": "Follow system theme"
+  }
+}
