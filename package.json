@@ -1,23 +1,13 @@
 {
-  "name": "gueranger",
-  "version": "0.1.0",
-  "type": "module",
-  "bin": {
-    "gueranger": "./build/server.js"
-  },
+  "private": true,
+  "workspaces": ["packages/*"],
   "scripts": {
-    "build": "tsup src/server.ts --format esm --out-dir build",
-    "dev": "tsx src/server.ts",
+    "build": "npm run build -w @gueranger/core && npm run build -w @gueranger/mcp",
+    "build:core": "npm run build -w @gueranger/core",
+    "build:mcp": "npm run build -w @gueranger/mcp",
+    "dev:mcp": "npm run dev -w @gueranger/mcp",
     "test": "vitest run",
-    "test:watch": "vitest",
-    "inspect": "npx @modelcontextprotocol/inspector node build/server.js"
-  },
-  "dependencies": {
-    "@modelcontextprotocol/sdk": "^1.28.0",
-    "bottleneck": "^2.19.5",
-    "cheerio": "^1.2.0",
-    "p-retry": "^7.1.1",
-    "zod": "^4.3.6"
+    "inspect": "npx @modelcontextprotocol/inspector node packages/mcp/build/server.js"
   },
   "devDependencies": {
     "@types/node": "^25.5.0",

@@ -1,0 +1,17 @@
+{
+  "name": "@gueranger/mcp",
+  "version": "0.2.0",
+  "type": "module",
+  "bin": {
+    "gueranger": "./build/server.js"
+  },
+  "scripts": {
+    "build": "tsup src/server.ts --format esm --out-dir build --external @gueranger/core",
+    "dev": "tsx src/server.ts"
+  },
+  "dependencies": {
+    "@gueranger/core": "*",
+    "@modelcontextprotocol/sdk": "^1.28.0",
+    "zod": "^4.3.6"
+  }
+}

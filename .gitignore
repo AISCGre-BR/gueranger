@@ -4,3 +4,9 @@ extension/dist/
 *.tsbuildinfo
 .env
 .env.local
+
+# Monorepo build outputs
+packages/core/dist/
+packages/mcp/build/
+packages/desktop/out/
+packages/desktop/dist/

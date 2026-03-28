@@ -1,0 +1,23 @@
+{
+  "name": "@gueranger/core",
+  "version": "0.2.0",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "rm -f tsconfig.tsbuildinfo && tsup && tsc --emitDeclarationOnly",
+    "dev": "tsup --watch"
+  },
+  "dependencies": {
+    "bottleneck": "^2.19.5",
+    "cheerio": "^1.2.0",
+    "p-retry": "^7.1.1",
+    "zod": "^4.3.6"
+  }
+}
