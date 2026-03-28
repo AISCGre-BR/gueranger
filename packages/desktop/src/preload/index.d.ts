@@ -33,6 +33,26 @@ interface GuerangerAPI {
   getTheme: () => Promise<string>;
   setTheme: (theme: string) => Promise<boolean>;
   openExternal: (url: string) => Promise<void>;
+
+  // Auth
+  googleSignIn: (rememberMe: boolean) => Promise<{ email: string; avatarUrl: string }>;
+  googleSignOut: () => Promise<void>;
+  googleGetStatus: () => Promise<{ signedIn: boolean; email?: string; avatarUrl?: string }>;
+
+  // DIAMM
+  diammSave: (username: string, password: string) => Promise<void>;
+  diammGet: () => Promise<{ username: string | null; password: string | null }>;
+  diammClear: () => Promise<void>;
+
+  // Export
+  exportToSheets: (params: {
+    rows: Record<string, string>[];
+    columns: string[];
+    sheetName: string;
+    existingSpreadsheetId?: string;
+    appendOrNewTab?: "append" | "newTab";
+  }) => Promise<{ url: string }>;
+  listRecentSheets: () => Promise<Array<{ id: string; name: string; modifiedTime: string }>>;
 }
 
 declare global {

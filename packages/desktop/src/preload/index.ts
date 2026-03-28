@@ -25,4 +25,26 @@ contextBridge.exposeInMainWorld("gueranger", {
     }
     return Promise.resolve();
   },
+
+  // Auth
+  googleSignIn: (rememberMe: boolean) =>
+    ipcRenderer.invoke("auth:google-sign-in", rememberMe),
+  googleSignOut: () => ipcRenderer.invoke("auth:google-sign-out"),
+  googleGetStatus: () => ipcRenderer.invoke("auth:google-get-status"),
+
+  // DIAMM credentials
+  diammSave: (username: string, password: string) =>
+    ipcRenderer.invoke("auth:diamm-save", username, password),
+  diammGet: () => ipcRenderer.invoke("auth:diamm-get"),
+  diammClear: () => ipcRenderer.invoke("auth:diamm-clear"),
+
+  // Export
+  exportToSheets: (params: {
+    rows: Record<string, string>[];
+    columns: string[];
+    sheetName: string;
+    existingSpreadsheetId?: string;
+    appendOrNewTab?: "append" | "newTab";
+  }) => ipcRenderer.invoke("export:to-sheets", params),
+  listRecentSheets: () => ipcRenderer.invoke("export:list-sheets"),
 });

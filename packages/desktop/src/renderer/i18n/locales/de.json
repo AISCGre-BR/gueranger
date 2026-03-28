@@ -61,5 +61,43 @@
     "lightMode": "Zum hellen Modus wechseln",
     "darkMode": "Zum dunklen Modus wechseln",
     "systemMode": "Systemdesign folgen"
+  },
+  "auth": {
+    "signIn": "Mit Google anmelden",
+    "signingIn": "Anmeldung...",
+    "signInFailed": "Anmeldung fehlgeschlagen",
+    "signOut": "Abmelden",
+    "rememberMe": "Angemeldet bleiben",
+    "diammCredentials": "DIAMM-Zugangsdaten",
+    "diammTitle": "DIAMM-Zugangsdaten",
+    "diammUsername": "Benutzername",
+    "diammPassword": "Passwort",
+    "diammSave": "Zugangsdaten speichern",
+    "diammClose": "Schliessen",
+    "diammSaved": "Zugangsdaten gespeichert"
+  },
+  "export": {
+    "toSheets": "In Sheets exportieren",
+    "dialogTitle": "In Google Sheets exportieren",
+    "dialogSubtitle": "{{count}} Manuskripte ausgewahlt",
+    "sheetName": "Tabellenname",
+    "newSpreadsheet": "Neue Tabelle erstellen",
+    "existingSpreadsheet": "Zu bestehender Tabelle hinzufugen",
+    "browse": "Durchsuchen...",
+    "appendRows": "An bestehende Daten anfugen",
+    "newTab": "Neues Tabellenblatt erstellen",
+    "columnsLabel": "Einzuschliessende Spalten",
+    "selectAll": "Alle auswahlen",
+    "deselectAll": "Alle abwahlen",
+    "exportButton": "Exportieren",
+    "close": "Schliessen",
+    "progress": "Exportiere in Google Sheets...",
+    "success": "Export abgeschlossen",
+    "openSheet": "In Google Sheets offnen",
+    "error": "Export fehlgeschlagen: {{message}}. Prufen Sie Ihre Verbindung und versuchen Sie es erneut.",
+    "retry": "Erneut versuchen",
+    "signInRequired": "Mit Google anmelden zum Exportieren",
+    "selectRequired": "Manuskripte zum Exportieren auswahlen",
+    "notSignedIn": "Melden Sie sich mit Google an, um Ihre Manuskriptauswahl in eine Tabelle zu exportieren."
   }
 }

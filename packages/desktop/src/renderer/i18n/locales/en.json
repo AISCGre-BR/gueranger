@@ -61,5 +61,43 @@
     "lightMode": "Switch to light mode",
     "darkMode": "Switch to dark mode",
     "systemMode": "Follow system theme"
+  },
+  "auth": {
+    "signIn": "Sign in with Google",
+    "signingIn": "Signing in...",
+    "signInFailed": "Sign-in failed",
+    "signOut": "Sign out",
+    "rememberMe": "Remember me",
+    "diammCredentials": "DIAMM Credentials",
+    "diammTitle": "DIAMM Credentials",
+    "diammUsername": "Username",
+    "diammPassword": "Password",
+    "diammSave": "Save Credentials",
+    "diammClose": "Close",
+    "diammSaved": "Credentials saved"
+  },
+  "export": {
+    "toSheets": "Export to Sheets",
+    "dialogTitle": "Export to Google Sheets",
+    "dialogSubtitle": "{{count}} manuscripts selected",
+    "sheetName": "Sheet name",
+    "newSpreadsheet": "Create new spreadsheet",
+    "existingSpreadsheet": "Add to existing spreadsheet",
+    "browse": "Browse...",
+    "appendRows": "Append to existing data",
+    "newTab": "Create new tab",
+    "columnsLabel": "Columns to include",
+    "selectAll": "Select all",
+    "deselectAll": "Deselect all",
+    "exportButton": "Export",
+    "close": "Close",
+    "progress": "Exporting to Google Sheets...",
+    "success": "Export complete",
+    "openSheet": "Open in Google Sheets",
+    "error": "Export failed: {{message}}. Check your connection and try again.",
+    "retry": "Retry",
+    "signInRequired": "Sign in with Google to export",
+    "selectRequired": "Select manuscripts to export",
+    "notSignedIn": "Sign in with Google to export your manuscript selections to a spreadsheet."
   }
 }

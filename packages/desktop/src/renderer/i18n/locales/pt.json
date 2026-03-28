@@ -61,5 +61,43 @@
     "lightMode": "Mudar para modo claro",
     "darkMode": "Mudar para modo escuro",
     "systemMode": "Seguir tema do sistema"
+  },
+  "auth": {
+    "signIn": "Entrar com Google",
+    "signingIn": "Entrando...",
+    "signInFailed": "Falha ao entrar",
+    "signOut": "Sair",
+    "rememberMe": "Lembrar-me",
+    "diammCredentials": "Credenciais DIAMM",
+    "diammTitle": "Credenciais DIAMM",
+    "diammUsername": "Usuario",
+    "diammPassword": "Senha",
+    "diammSave": "Salvar credenciais",
+    "diammClose": "Fechar",
+    "diammSaved": "Credenciais salvas"
+  },
+  "export": {
+    "toSheets": "Exportar para Sheets",
+    "dialogTitle": "Exportar para Google Sheets",
+    "dialogSubtitle": "{{count}} manuscritos selecionados",
+    "sheetName": "Nome da planilha",
+    "newSpreadsheet": "Criar nova planilha",
+    "existingSpreadsheet": "Adicionar a planilha existente",
+    "browse": "Procurar...",
+    "appendRows": "Adicionar aos dados existentes",
+    "newTab": "Criar nova aba",
+    "columnsLabel": "Colunas a incluir",
+    "selectAll": "Selecionar tudo",
+    "deselectAll": "Desmarcar tudo",
+    "exportButton": "Exportar",
+    "close": "Fechar",
+    "progress": "Exportando para Google Sheets...",
+    "success": "Exportacao concluida",
+    "openSheet": "Abrir no Google Sheets",
+    "error": "Falha na exportacao: {{message}}. Verifique sua conexao e tente novamente.",
+    "retry": "Tentar novamente",
+    "signInRequired": "Entre com Google para exportar",
+    "selectRequired": "Selecione manuscritos para exportar",
+    "notSignedIn": "Entre com Google para exportar suas selecoes de manuscritos para uma planilha."
   }
 }

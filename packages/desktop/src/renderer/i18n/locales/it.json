@@ -61,5 +61,43 @@
     "lightMode": "Passa alla modalità chiara",
     "darkMode": "Passa alla modalità scura",
     "systemMode": "Segui il tema di sistema"
+  },
+  "auth": {
+    "signIn": "Accedi con Google",
+    "signingIn": "Accesso in corso...",
+    "signInFailed": "Accesso fallito",
+    "signOut": "Esci",
+    "rememberMe": "Ricordami",
+    "diammCredentials": "Credenziali DIAMM",
+    "diammTitle": "Credenziali DIAMM",
+    "diammUsername": "Nome utente",
+    "diammPassword": "Password",
+    "diammSave": "Salva credenziali",
+    "diammClose": "Chiudi",
+    "diammSaved": "Credenziali salvate"
+  },
+  "export": {
+    "toSheets": "Esporta in Sheets",
+    "dialogTitle": "Esporta in Google Sheets",
+    "dialogSubtitle": "{{count}} manoscritti selezionati",
+    "sheetName": "Nome del foglio",
+    "newSpreadsheet": "Crea nuovo foglio di lavoro",
+    "existingSpreadsheet": "Aggiungi a foglio esistente",
+    "browse": "Sfoglia...",
+    "appendRows": "Aggiungi ai dati esistenti",
+    "newTab": "Crea nuova scheda",
+    "columnsLabel": "Colonne da includere",
+    "selectAll": "Seleziona tutto",
+    "deselectAll": "Deseleziona tutto",
+    "exportButton": "Esporta",
+    "close": "Chiudi",
+    "progress": "Esportazione in Google Sheets...",
+    "success": "Esportazione completata",
+    "openSheet": "Apri in Google Sheets",
+    "error": "Esportazione fallita: {{message}}. Controlla la connessione e riprova.",
+    "retry": "Riprova",
+    "signInRequired": "Accedi con Google per esportare",
+    "selectRequired": "Seleziona manoscritti da esportare",
+    "notSignedIn": "Accedi con Google per esportare le selezioni dei manoscritti in un foglio di lavoro."
   }
 }
