@@ -6,16 +6,16 @@
     "label": "Incipit / GABC",
     "placeholder": "Lateinisches Incipit oder GABC-Melodie...",
     "button": "Suchen",
-    "clear": "Loeschen",
+    "clear": "Löschen",
     "searching": "Suche in 5 Quellen...",
     "noResults": "Keine Handschriften gefunden",
-    "noResultsHint": "Keine Ergebnisse fuer \"{{query}}\". Versuchen Sie ein breiteres Incipit oder entfernen Sie Filter.",
+    "noResultsHint": "Keine Ergebnisse für \"{{query}}\". Versuchen Sie ein breiteres Incipit oder entfernen Sie Filter.",
     "initialTitle": "Handschriften suchen",
     "initialHint": "Geben Sie ein lateinisches Incipit oder eine GABC-Melodie oben ein, um digitalisierte Handschriften in Cantus, DIAMM, RISM, Biblissima und MMMO zu finden.",
-    "error": "Suche fehlgeschlagen: {{message}}. Pruefen Sie Ihre Verbindung und versuchen Sie es erneut."
+    "error": "Suche fehlgeschlagen: {{message}}. Prüfen Sie Ihre Verbindung und versuchen Sie es erneut."
   },
   "filters": {
-    "genre": "Genre",
+    "genre": "Gattung",
     "genrePlaceholder": "Alle Gattungen",
     "century": "Jahrhundert",
     "centuryPlaceholder": "Alle Jahrhunderte",
@@ -36,18 +36,18 @@
     "image": "Bild",
     "imageDetected": "Erkannt",
     "imageNotFound": "Nicht gefunden",
-    "imageTooltip": "Ob eine Bild-URL per API-Pruefung erreichbar war. Fehlende Angabe bestaetigt nicht, dass kein Bild verfuegbar ist.",
-    "selectedOf": "{{selected}} von {{total}} ausgewaehlt",
+    "imageTooltip": "Ob eine Bild-URL per API-Prüfung erreichbar war. Fehlende Angabe bestätigt nicht, dass kein Bild verfügbar ist.",
+    "selectedOf": "{{selected}} von {{total}} ausgewählt",
     "resultsFrom": "Ergebnisse von: {{sources}}",
-    "openInBrowser": "{{source}} im Browser oeffnen"
+    "openInBrowser": "{{source}} im Browser öffnen"
   },
   "pagination": {
     "page": "Seite {{current}} von {{total}}",
     "showing": "Zeige {{start}}-{{end}} von {{total}} Ergebnissen"
   },
   "warnings": {
-    "sourcesUnavailable": "{{count}} Quelle nicht verfuegbar",
-    "sourcesUnavailable_plural": "{{count}} Quellen nicht verfuegbar"
+    "sourcesUnavailable": "{{count}} Quelle nicht verfügbar",
+    "sourcesUnavailable_plural": "{{count}} Quellen nicht verfügbar"
   },
   "settings": {
     "theme": "Design",

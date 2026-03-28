@@ -12,13 +12,13 @@
     "noResultsHint": "Nenhum resultado para \"{{query}}\". Tente um incipit mais amplo ou remova filtros.",
     "initialTitle": "Buscar manuscritos",
     "initialHint": "Digite um incipit em latim ou melodia GABC acima para encontrar manuscritos digitalizados no Cantus, DIAMM, RISM, Biblissima e MMMO.",
-    "error": "Busca falhou: {{message}}. Verifique sua conexao e tente novamente."
+    "error": "Busca falhou: {{message}}. Verifique sua conexão e tente novamente."
   },
   "filters": {
-    "genre": "Genre",
-    "genrePlaceholder": "Todos os generos",
-    "century": "Seculo",
-    "centuryPlaceholder": "Todos os seculos",
+    "genre": "Gênero",
+    "genrePlaceholder": "Todos os gêneros",
+    "century": "Século",
+    "centuryPlaceholder": "Todos os séculos",
     "feast": "Festa",
     "feastPlaceholder": "Todas as festas"
   },
@@ -26,28 +26,28 @@
     "siglum": "Siglum",
     "library": "Biblioteca",
     "city": "Cidade",
-    "century": "Seculo",
+    "century": "Século",
     "incipit": "Incipit",
-    "genre": "Genero",
+    "genre": "Gênero",
     "feast": "Festa",
-    "folio": "Folio",
+    "folio": "Fólio",
     "source": "Fonte",
     "match": "Tipo",
     "image": "Imagem",
     "imageDetected": "Detectada",
-    "imageNotFound": "Nao encontrada",
-    "imageTooltip": "Se uma URL de imagem foi acessivel via verificacao de API. Ausencia nao confirma que a imagem esta indisponivel.",
+    "imageNotFound": "Não encontrada",
+    "imageTooltip": "Se uma URL de imagem foi acessível via verificação de API. Ausência não confirma que a imagem está indisponível.",
     "selectedOf": "{{selected}} de {{total}} selecionados",
     "resultsFrom": "Resultados de: {{sources}}",
     "openInBrowser": "Abrir {{source}} no navegador"
   },
   "pagination": {
-    "page": "Pagina {{current}} de {{total}}",
+    "page": "Página {{current}} de {{total}}",
     "showing": "Mostrando {{start}}-{{end}} de {{total}} resultados"
   },
   "warnings": {
-    "sourcesUnavailable": "{{count}} fonte indisponivel",
-    "sourcesUnavailable_plural": "{{count}} fontes indisponiveis"
+    "sourcesUnavailable": "{{count}} fonte indisponível",
+    "sourcesUnavailable_plural": "{{count}} fontes indisponíveis"
   },
   "settings": {
     "theme": "Tema",

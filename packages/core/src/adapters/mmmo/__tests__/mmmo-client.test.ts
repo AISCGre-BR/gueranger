@@ -85,8 +85,8 @@ const CHANT_DETAIL_FIXTURE = `
         <div class="field-item">Pange lingua*</div>
       </div>
     </div>
-    <div class="field field-name-field-image">
-      <div class="field-label">Image:&nbsp;</div>
+    <div class="field field-name-field-image-link field-type-link-field field-label-inline clearfix">
+      <div class="field-label">Image link:&nbsp;</div>
       <div class="field-items">
         <div class="field-item">
           <a href="https://bvmm.irht.cnrs.fr/iiif/223/canvas/canvas-151914/view">View image</a>

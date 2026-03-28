@@ -99,9 +99,9 @@ export function parseChantDetail(html: string): MmmoChantResult | null {
   const fullText =
     $(".field-name-field-full-text .field-item").first().text().trim() || "N/A";
 
-  // Extract image URL
+  // Extract image URL (class is "field-name-field-image-link", not "field-name-field-image")
   const imageUrl =
-    $(".field-name-field-image a").first().attr("href") || "N/A";
+    $(".field-name-field-image-link a").first().attr("href") || "N/A";
 
   // Extract office
   const office =
