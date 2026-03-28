@@ -12,12 +12,16 @@ const limiter = createRateLimiter({ maxConcurrent: 1, minTime: 2000 });
  * Searches CantusDB by Volpiano melodic incipit.
  * Converts the raw Volpiano to pitch-only notes for the query.
  */
+/** Max pitch notes to send — CantusDB fails on long queries due to manuscript variation. */
+const MELODY_INCIPIT_LENGTH = 7;
+
 export async function searchByMelody(
   volpiano: string,
   options?: { genre?: string; feast?: string },
 ): Promise<CantusDbMelodyResponse> {
   try {
-    const notes = volpianoToNotes(volpiano);
+    const allNotes = volpianoToNotes(volpiano);
+    const notes = allNotes.slice(0, MELODY_INCIPIT_LENGTH);
     let url = `${CANTUS_DB_BASE}/ajax/melody-search/?notes=${encodeURIComponent(notes)}&anywhere=false&transpose=false`;
 
     if (options?.genre) {

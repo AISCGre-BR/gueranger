@@ -42,7 +42,7 @@ export type CantusIndexCidResponse = z.infer<
 /** Detail response from /json-node/{id} -- passthrough since we only need a few fields */
 export const CantusDbChantDetailSchema = z.object({
   id: z.number().optional(),
-  image_link: z.string().optional(),
+  image_link: z.string().nullable().optional(),
   source: z.object({ id: z.number().optional() }).optional(),
 }).passthrough();
 export type CantusDbChantDetail = z.infer<typeof CantusDbChantDetailSchema>;
