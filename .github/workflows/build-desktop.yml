@@ -38,6 +38,16 @@ jobs:
         run: npm run dist:${{ matrix.platform }}
         working-directory: packages/desktop
 
+      - name: Verify bundle has no external npm deps
+        shell: bash
+        run: |
+          MAIN_SIZE=$(wc -c < packages/desktop/out/main/index.js)
+          echo "Main bundle size: $MAIN_SIZE bytes"
+          if [ "$MAIN_SIZE" -lt 100000 ]; then
+            echo "ERROR: Main bundle too small ($MAIN_SIZE bytes) — deps not bundled!"
+            exit 1
+          fi
+
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
