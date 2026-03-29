@@ -6,16 +6,6 @@ directories:
 files:
   - out/**/*
   - "!node_modules/**/*"
-  - node_modules/@gueranger/core/**/*
-  - node_modules/google-auth-library/**/*
-  - node_modules/@googleapis/**/*
-  - node_modules/electron-conf/**/*
-  - node_modules/gaxios/**/*
-  - node_modules/gcp-metadata/**/*
-  - node_modules/gtoken/**/*
-  - node_modules/jws/**/*
-asarUnpack:
-  - node_modules/@gueranger/core/**/*
 icon: resources/icon.png
 win:
   target:
