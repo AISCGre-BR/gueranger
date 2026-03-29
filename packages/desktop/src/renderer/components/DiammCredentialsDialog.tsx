@@ -13,12 +13,14 @@ export function DiammCredentialsDialog({ open, onClose }: Props) {
   const [password, setPassword] = useState("");
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   // Load existing credentials when dialog opens
   useEffect(() => {
     if (open) {
       setSaved(false);
       setSaving(false);
+      setError(null);
       window.gueranger.diammGet().then((creds) => {
         setUsername(creds.username ?? "");
         setPassword(creds.password ?? "");
@@ -37,13 +39,23 @@ export function DiammCredentialsDialog({ open, onClose }: Props) {
 
   const handleSave = useCallback(async () => {
     setSaving(true);
-    await window.gueranger.diammSave(username, password);
-    setSaving(false);
-    setSaved(true);
-    setTimeout(() => {
-      onClose();
-    }, 2000);
-  }, [username, password, onClose]);
+    setError(null);
+    try {
+      await window.gueranger.diammSave(username, password);
+      setSaving(false);
+      setSaved(true);
+      setTimeout(() => {
+        onClose();
+      }, 2000);
+    } catch (err) {
+      setSaving(false);
+      setError(
+        err instanceof Error && err.message.includes("Secure storage")
+          ? t("auth.diammStorageUnavailable")
+          : t("auth.diammSaveFailed"),
+      );
+    }
+  }, [username, password, onClose, t]);
 
   if (!open) return null;
 
@@ -83,6 +95,10 @@ export function DiammCredentialsDialog({ open, onClose }: Props) {
             />
           </div>
         </div>
+
+        {error && (
+          <p className="mt-3 text-sm text-red-600 dark:text-red-400">{error}</p>
+        )}
 
         <div className="mt-6 flex items-center justify-end gap-3">
           <button

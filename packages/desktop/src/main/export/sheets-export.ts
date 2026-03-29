@@ -17,11 +17,13 @@ export async function exportToNewSheet(
   });
 
   const spreadsheetId = createRes.data.spreadsheetId!;
-  const sheetId = createRes.data.sheets![0].properties!.sheetId!;
+  const firstSheet = createRes.data.sheets![0].properties!;
+  const sheetId = firstSheet.sheetId!;
+  const sheetTitle = firstSheet.title!;
 
   await sheetsApi.spreadsheets.values.update({
     spreadsheetId,
-    range: "Sheet1!A1",
+    range: `'${sheetTitle}'!A1`,
     valueInputOption: "RAW",
     requestBody: {
       values: [headers, ...rows],
@@ -151,10 +153,16 @@ export async function exportToExistingSheet(
       },
     });
   } else {
-    // mode === "append"
+    // mode === "append" — get actual first sheet name
+    const meta = await sheetsApi.spreadsheets.get({
+      spreadsheetId,
+      fields: "sheets.properties.title",
+    });
+    const firstTabName = meta.data.sheets![0].properties!.title!;
+
     await sheetsApi.spreadsheets.values.append({
       spreadsheetId,
-      range: "Sheet1!A1",
+      range: `'${firstTabName}'!A1`,
       valueInputOption: "RAW",
       insertDataOption: "INSERT_ROWS",
       requestBody: {

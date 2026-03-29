@@ -60,7 +60,11 @@ function registerAuthHandlers(): void {
     async (_event, rememberMe: boolean) => {
       const result = await startGoogleSignIn();
       if (rememberMe) {
-        storeEncrypted("google-refresh-token", result.refreshToken);
+        try {
+          storeEncrypted("google-refresh-token", result.refreshToken);
+        } catch (err) {
+          console.warn("[auth] Could not persist token (secure storage unavailable):", err);
+        }
       }
       return { email: result.email, avatarUrl: result.avatarUrl };
     },

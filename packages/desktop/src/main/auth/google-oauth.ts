@@ -4,8 +4,13 @@ import { randomBytes, createHash } from "node:crypto";
 import { shell } from "electron";
 import { retrieveEncrypted, clearEncrypted } from "./safe-credentials";
 
-const CLIENT_ID = process.env.GOOGLE_CLIENT_ID ?? "";
-const CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET ?? "";
+// Google OAuth credentials for Desktop app.
+// These are NOT truly secret — Google documents that "installed application"
+// secrets are extractable. Security comes from the user authorizing in the
+// browser + PKCE, not from these values being hidden.
+// See: https://developers.google.com/identity/protocols/oauth2/native-app
+const CLIENT_ID = "REDACTED_GOOGLE_CLIENT_ID";
+const CLIENT_SECRET = "REDACTED_GOOGLE_CLIENT_SECRET";
 
 const SCOPES = [
   "https://www.googleapis.com/auth/spreadsheets",
@@ -56,14 +61,14 @@ export async function startGoogleSignIn(): Promise<{
           }
 
           if (code) {
+            const port = (server.address() as { port: number }).port;
+            const redirectUri = `http://127.0.0.1:${port}`;
+
             res.writeHead(200, { "Content-Type": "text/html" });
             res.end(
               "<html><body><h1>Signed in!</h1><p>You can close this window.</p></body></html>",
             );
             server.close();
-
-            const port = (server.address() as { port: number }).port;
-            const redirectUri = `http://127.0.0.1:${port}`;
             const client = new OAuth2Client(CLIENT_ID, CLIENT_SECRET, redirectUri);
 
             const { tokens } = await client.getToken({

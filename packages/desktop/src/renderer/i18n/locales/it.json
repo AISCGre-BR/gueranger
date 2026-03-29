@@ -63,7 +63,10 @@
     "systemMode": "Segui il tema di sistema"
   },
   "auth": {
+    "accounts": "Account",
     "signIn": "Accedi con Google",
+    "signInGoogle": "Accedi con Google",
+    "missingCredentials": "Accesso Google non disponibile. Contattare lo sviluppatore.",
     "signingIn": "Accesso in corso...",
     "signInFailed": "Accesso fallito",
     "signOut": "Esci",
@@ -74,7 +77,23 @@
     "diammPassword": "Password",
     "diammSave": "Salva credenziali",
     "diammClose": "Chiudi",
-    "diammSaved": "Credenziali salvate"
+    "diammSaved": "Credenziali salvate",
+    "diammSaveFailed": "Impossibile salvare le credenziali. Riprovare.",
+    "diammStorageUnavailable": "Archiviazione sicura non disponibile. Su Linux, installare un servizio keyring (gnome-keyring o KWallet)."
+  },
+  "welcome": {
+    "close": "Chiudi",
+    "back": "Indietro",
+    "next": "Avanti",
+    "start": "Inizia",
+    "step1Title": "Benvenuto in Gueranger",
+    "step1Body": "Trova manoscritti digitalizzati di canto gregoriano in pochi secondi.\n\nDigita un incipit in latino (es. \"Resurrexi et adhuc\") o una melodia in notazione GABC nel campo di ricerca.",
+    "step2Title": "Ricerca per melodia",
+    "step2Body": "Oltre al testo, puoi cercare per melodia usando la notazione GABC.\n\nEsempio: (c4) Re(f)sur(g)re(h)xi(h)\n\nGueranger converte automaticamente in Volpiano e cerca nelle fonti disponibili.",
+    "step3Title": "Esporta risultati",
+    "step3Body": "Seleziona i manoscritti nella tabella dei risultati ed esporta direttamente in Google Sheets.\n\nAccedi con il tuo account Google dal menu \"Account\" in alto a destra.",
+    "step4Title": "Fonti consultate",
+    "step4Body": "Gueranger cerca simultaneamente in:\n\n• Cantus Database\n• DIAMM\n• MMMO\n• Biblissima (Gallica, BAV, ecc.)\n• Fonti ispaniche\n\nBuona ricerca!"
   },
   "export": {
     "toSheets": "Esporta in Sheets",

@@ -10,7 +10,20 @@ function getSettings() {
   return settings;
 }
 
+function isEncryptionAvailable(): boolean {
+  try {
+    return safeStorage.isEncryptionAvailable();
+  } catch {
+    return false;
+  }
+}
+
 export function storeEncrypted(key: string, value: string): void {
+  if (!isEncryptionAvailable()) {
+    throw new Error(
+      "Secure storage is not available. On Linux, install and enable a keyring service (gnome-keyring, KWallet, or similar).",
+    );
+  }
   if (safeStorage.getSelectedStorageBackend() === "basic_text") {
     console.warn(
       "[credentials] safeStorage using basic_text backend -- data less secure.",
@@ -21,10 +34,16 @@ export function storeEncrypted(key: string, value: string): void {
 }
 
 export function retrieveEncrypted(key: string): string | null {
+  if (!isEncryptionAvailable()) return null;
   const stored = getSettings().get(key) as string | undefined;
   if (!stored) return null;
-  const buffer = Buffer.from(stored, "base64");
-  return safeStorage.decryptString(buffer);
+  try {
+    const buffer = Buffer.from(stored, "base64");
+    return safeStorage.decryptString(buffer);
+  } catch {
+    console.warn("[credentials] Failed to decrypt", key);
+    return null;
+  }
 }
 
 export function clearEncrypted(key: string): void {
