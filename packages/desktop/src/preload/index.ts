@@ -14,6 +14,8 @@ contextBridge.exposeInMainWorld("gueranger", {
   setLanguage: (lang: string) => ipcRenderer.invoke("settings:set-language", lang),
   getTheme: () => ipcRenderer.invoke("settings:get-theme"),
   setTheme: (theme: string) => ipcRenderer.invoke("settings:set-theme", theme),
+  isFirstLaunch: () => ipcRenderer.invoke("settings:is-first-launch"),
+  markLaunched: () => ipcRenderer.invoke("settings:mark-launched"),
   openExternal: (url: string): Promise<void> => {
     try {
       const parsed = new URL(url);

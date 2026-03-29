@@ -32,6 +32,8 @@ interface GuerangerAPI {
   setLanguage: (lang: string) => Promise<string>;
   getTheme: () => Promise<string>;
   setTheme: (theme: string) => Promise<boolean>;
+  isFirstLaunch: () => Promise<boolean>;
+  markLaunched: () => Promise<void>;
   openExternal: (url: string) => Promise<void>;
 
   // Auth

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { SearchForm } from "./components/SearchForm";
 import { ResultsTable } from "./components/ResultsTable";
@@ -8,6 +8,7 @@ import { ThemeToggle } from "./components/ThemeToggle";
 import { GoogleAccountButton } from "./components/GoogleAccountButton";
 import { DiammCredentialsDialog } from "./components/DiammCredentialsDialog";
 import { ExportToast } from "./components/ExportToast";
+import { WelcomeDialog } from "./components/WelcomeDialog";
 import { useSearch } from "./hooks/useSearch";
 import { useSettings } from "./hooks/useSettings";
 import { useAuth } from "./hooks/useAuth";
@@ -22,6 +23,13 @@ function App() {
   const auth = useAuth();
   const exportState = useExport();
   const [diammOpen, setDiammOpen] = useState(false);
+  const [welcomeOpen, setWelcomeOpen] = useState(false);
+
+  useEffect(() => {
+    window.gueranger.isFirstLaunch().then((isFirst) => {
+      if (isFirst) setWelcomeOpen(true);
+    });
+  }, []);
   const {
     results,
     warnings,
@@ -117,6 +125,13 @@ function App() {
         </div>
       </div>
 
+      <WelcomeDialog
+        open={welcomeOpen}
+        onClose={() => {
+          setWelcomeOpen(false);
+          window.gueranger.markLaunched();
+        }}
+      />
       <DiammCredentialsDialog open={diammOpen} onClose={() => setDiammOpen(false)} />
       <ExportToast
         status={exportState.status}

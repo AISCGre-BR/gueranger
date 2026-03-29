@@ -34,4 +34,12 @@ export function registerSettingsHandlers(): void {
     getSettings().set("theme", theme);
     return nativeTheme.shouldUseDarkColors;
   });
+
+  ipcMain.handle("settings:is-first-launch", () => {
+    return !getSettings().get("hasLaunched", false);
+  });
+
+  ipcMain.handle("settings:mark-launched", () => {
+    getSettings().set("hasLaunched", true);
+  });
 }
