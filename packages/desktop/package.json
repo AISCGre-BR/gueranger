@@ -1,12 +1,19 @@
 {
   "name": "@gueranger/desktop",
   "version": "0.2.0",
+  "description": "Desktop app for searching digitized Gregorian chant manuscripts",
+  "author": "Gabriel Gueranger",
   "main": "./out/main/index.js",
   "scripts": {
     "dev": "electron-vite dev",
     "build": "electron-vite build",
     "preview": "electron-vite preview",
-    "test": "vitest run --reporter=verbose"
+    "test": "vitest run --reporter=verbose",
+    "pack": "electron-vite build && electron-builder --dir",
+    "dist": "electron-vite build && electron-builder",
+    "dist:win": "electron-vite build && electron-builder --win",
+    "dist:mac": "electron-vite build && electron-builder --mac",
+    "dist:linux": "electron-vite build && electron-builder --linux"
   },
   "dependencies": {
     "@googleapis/drive": "^20.1.0",
@@ -29,7 +36,8 @@
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^4.5.2",
-    "electron": "^41.1.0",
+    "electron": "41.1.0",
+    "electron-builder": "^26.8.1",
     "electron-vite": "^5.0.0",
     "jsdom": "^29.0.1",
     "vitest": "^4.1.2"

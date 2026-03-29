@@ -1,0 +1,44 @@
+appId: com.gueranger.app
+productName: Gueranger
+directories:
+  buildResources: resources
+  output: dist
+files:
+  - out/**/*
+  - "!node_modules/**/*"
+  - node_modules/@gueranger/core/**/*
+  - node_modules/google-auth-library/**/*
+  - node_modules/@googleapis/**/*
+  - node_modules/electron-conf/**/*
+  - node_modules/gaxios/**/*
+  - node_modules/gcp-metadata/**/*
+  - node_modules/gtoken/**/*
+  - node_modules/jws/**/*
+asarUnpack:
+  - node_modules/@gueranger/core/**/*
+icon: resources/icon.png
+win:
+  target:
+    - target: nsis
+      arch:
+        - x64
+  icon: resources/icon.png
+mac:
+  target:
+    - target: dmg
+      arch:
+        - x64
+        - arm64
+  category: public.app-category.education
+  icon: resources/icon.png
+linux:
+  target:
+    - target: AppImage
+      arch:
+        - x64
+  category: Education
+  icon: resources/icon.png
+nsis:
+  oneClick: false
+  allowToChangeInstallationDirectory: true
+  createDesktopShortcut: true
