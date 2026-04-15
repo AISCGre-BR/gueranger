@@ -6,9 +6,13 @@ on:
       - 'v*'
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   build:
     strategy:
+      fail-fast: false
       matrix:
         include:
           - os: ubuntu-latest
@@ -57,3 +61,14 @@ jobs:
             packages/desktop/dist/*.dmg
             packages/desktop/dist/*.exe
           retention-days: 30
+
+      - name: Attach installers to GitHub Release
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          draft: false
+          prerelease: true
+          files: |
+            packages/desktop/dist/*.AppImage
+            packages/desktop/dist/*.dmg
+            packages/desktop/dist/*.exe
