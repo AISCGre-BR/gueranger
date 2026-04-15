@@ -1,0 +1,49 @@
+Guéranger
+Copyright (C) 2026 Gabriel HTB
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU General Public License for more details.
+
+See the LICENSE file for the full license text.
+
+=== Third-party components ===
+
+This distribution bundles the following open-source libraries via npm.
+See each package's own LICENSE file under node_modules/ for the full text.
+
+Runtime dependencies:
+  - @modelcontextprotocol/sdk (MIT)
+  - bottleneck (MIT)
+  - cheerio (MIT)
+  - electron (MIT)
+  - electron-conf (MIT)
+  - exceljs (MIT)
+  - fast-xml-parser (MIT)
+  - i18next (MIT)
+  - lucide-react (ISC)
+  - p-retry (MIT)
+  - react, react-dom (MIT)
+  - react-i18next (MIT)
+  - tailwindcss (MIT)
+  - zod (MIT)
+
+=== Upstream data sources ===
+
+Guéranger queries public academic databases. It does not redistribute
+their data; each source remains the property of its respective
+institution and is governed by its own terms of use:
+
+  - Cantus Index — https://cantusindex.org/
+  - Cantus Database — https://cantusdatabase.org/
+  - DIAMM — https://www.diamm.ac.uk/
+  - MMMO — https://musmed.eu/
+  - Biblissima — https://iiif.biblissima.fr/
+  - Gallica / BnF — https://gallica.bnf.fr/
+  - BAV / DigiVatLib — https://digi.vatlib.it/

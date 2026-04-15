@@ -3,10 +3,31 @@ build/
 extension/dist/
 *.tsbuildinfo
 .env
+.env.*
 .env.local
+*.log
+.DS_Store
+
+# IDE
+.vscode/
+.idea/
 
 # Monorepo build outputs
 packages/core/dist/
 packages/mcp/build/
 packages/desktop/out/
 packages/desktop/dist/
+
+# AI assistants / planning — local only, never published
+CLAUDE.md
+AGENTS.md
+GEMINI.md
+.claude/
+.planning/
+.cursor/
+.aider/
+
+# Internal specs / drafts
+spec.md
+brief.md
+mocquereau-go-public-checklist.md
