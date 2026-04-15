@@ -28,25 +28,22 @@ contextBridge.exposeInMainWorld("gueranger", {
     return Promise.resolve();
   },
 
-  // Auth
-  googleSignIn: (rememberMe: boolean) =>
-    ipcRenderer.invoke("auth:google-sign-in", rememberMe),
-  googleSignOut: () => ipcRenderer.invoke("auth:google-sign-out"),
-  googleGetStatus: () => ipcRenderer.invoke("auth:google-get-status"),
-
   // DIAMM credentials
   diammSave: (username: string, password: string) =>
     ipcRenderer.invoke("auth:diamm-save", username, password),
   diammGet: () => ipcRenderer.invoke("auth:diamm-get"),
   diammClear: () => ipcRenderer.invoke("auth:diamm-clear"),
 
-  // Export
-  exportToSheets: (params: {
+  // Excel export
+  exportToExcel: (params: {
     rows: Record<string, string>[];
     columns: string[];
+    columnLabels: string[];
     sheetName: string;
-    existingSpreadsheetId?: string;
-    appendOrNewTab?: "append" | "newTab";
-  }) => ipcRenderer.invoke("export:to-sheets", params),
-  listRecentSheets: () => ipcRenderer.invoke("export:list-sheets"),
+    defaultFileName: string;
+  }) => ipcRenderer.invoke("export:to-excel", params),
+  revealExportInFolder: (filePath: string) =>
+    ipcRenderer.invoke("export:reveal-in-folder", filePath),
+  openExportFile: (filePath: string) =>
+    ipcRenderer.invoke("export:open-file", filePath),
 });

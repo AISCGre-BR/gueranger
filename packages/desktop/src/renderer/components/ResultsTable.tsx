@@ -19,12 +19,19 @@ import { ExportDialog } from "./ExportDialog";
 interface Props {
   data: ManuscriptRow[];
   sourcesSucceeded: string[];
-  auth: { signedIn: boolean };
-  exportState: { exportToSheets: (params: { rows: Record<string, string>[]; columns: string[]; sheetName: string; existingSpreadsheetId?: string; appendOrNewTab?: "append" | "newTab" }) => void };
+  exportState: {
+    exportToExcel: (params: {
+      rows: Record<string, string>[];
+      columns: string[];
+      columnLabels: string[];
+      sheetName: string;
+      defaultFileName: string;
+    }) => void;
+  };
   searchQuery: string;
 }
 
-export function ResultsTable({ data, sourcesSucceeded, auth, exportState, searchQuery }: Props) {
+export function ResultsTable({ data, sourcesSucceeded, exportState, searchQuery }: Props) {
   const { t } = useTranslation();
   const columns = useColumns();
   const [sorting, setSorting] = useState<SortingState>([]);
@@ -82,22 +89,16 @@ export function ResultsTable({ data, sourcesSucceeded, auth, exportState, search
         <div className="flex items-center gap-2">
           <button
             onClick={() => setExportDialogOpen(true)}
-            disabled={selectedCount === 0 || !auth.signedIn}
-            title={
-              !auth.signedIn
-                ? t("export.signInRequired")
-                : selectedCount === 0
-                  ? t("export.selectRequired")
-                  : undefined
-            }
+            disabled={selectedCount === 0}
+            title={selectedCount === 0 ? t("export.selectRequired") : undefined}
             className={`flex items-center gap-1.5 rounded-md px-3 py-2 text-xs font-medium transition-colors ${
-              selectedCount === 0 || !auth.signedIn
+              selectedCount === 0
                 ? "cursor-not-allowed bg-slate-200 text-slate-400 dark:bg-slate-700 dark:text-slate-500"
                 : "bg-blue-600 text-white hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600"
             }`}
           >
             <FileSpreadsheet className="h-3.5 w-3.5" />
-            {t("export.toSheets")}
+            {t("export.toExcel")}
           </button>
         </div>
       </div>
@@ -196,7 +197,7 @@ export function ResultsTable({ data, sourcesSucceeded, auth, exportState, search
         searchQuery={searchQuery}
         onExport={(params) => {
           setExportDialogOpen(false);
-          exportState.exportToSheets(params);
+          exportState.exportToExcel(params);
         }}
       />
     </div>

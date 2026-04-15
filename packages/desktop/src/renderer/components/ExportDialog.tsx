@@ -21,12 +21,6 @@ const EXPORTABLE_COLUMNS = [
 
 type ExportableColumn = (typeof EXPORTABLE_COLUMNS)[number];
 
-interface ExportSheet {
-  id: string;
-  name: string;
-  modifiedTime: string;
-}
-
 interface Props {
   open: boolean;
   onClose: () => void;
@@ -35,13 +29,12 @@ interface Props {
   onExport: (params: {
     rows: Record<string, string>[];
     columns: string[];
+    columnLabels: string[];
     sheetName: string;
-    existingSpreadsheetId?: string;
-    appendOrNewTab?: "append" | "newTab";
+    defaultFileName: string;
   }) => void;
 }
 
-/** Maps column keys to their i18n label keys. */
 function getColumnLabel(key: ExportableColumn, t: (k: string) => string): string {
   switch (key) {
     case "cantusId":
@@ -61,30 +54,25 @@ function getColumnLabel(key: ExportableColumn, t: (k: string) => string): string
   }
 }
 
+function sanitizeFileName(name: string): string {
+  return name.replace(/[\\/:*?"<>|]/g, "_").trim() || "gueranger-export";
+}
+
 export function ExportDialog({ open, onClose, selectedRows, searchQuery, onExport }: Props) {
   const { t } = useTranslation();
+  const [fileName, setFileName] = useState("");
   const [sheetName, setSheetName] = useState("");
-  const [destination, setDestination] = useState<"new" | "existing">("new");
-  const [existingSheetId, setExistingSheetId] = useState<string | null>(null);
-  const [existingSheetName, setExistingSheetName] = useState<string | null>(null);
-  const [appendOrNewTab, setAppendOrNewTab] = useState<"append" | "newTab">("newTab");
   const [selectedColumns, setSelectedColumns] = useState<ExportableColumn[]>([...EXPORTABLE_COLUMNS]);
-  const [availableSheets, setAvailableSheets] = useState<ExportSheet[]>([]);
-  const [loadingSheets, setLoadingSheets] = useState(false);
-  const [showSheetList, setShowSheetList] = useState(false);
 
-  // Initialize sheet name when dialog opens
   useEffect(() => {
     if (open) {
-      setSheetName(`Gueranger - ${searchQuery} - ${new Date().toISOString().split("T")[0]}`);
-      setDestination("new");
-      setExistingSheetId(null);
-      setExistingSheetName(null);
-      setShowSheetList(false);
+      const date = new Date().toISOString().split("T")[0];
+      const base = searchQuery ? `Gueranger - ${searchQuery} - ${date}` : `Gueranger - ${date}`;
+      setFileName(base);
+      setSheetName("Results");
     }
   }, [open, searchQuery]);
 
-  // Escape key to close
   useEffect(() => {
     function handleEscape(e: KeyboardEvent) {
       if (e.key === "Escape" && open) onClose();
@@ -92,19 +80,6 @@ export function ExportDialog({ open, onClose, selectedRows, searchQuery, onExpor
     document.addEventListener("keydown", handleEscape);
     return () => document.removeEventListener("keydown", handleEscape);
   }, [open, onClose]);
-
-  const handleBrowseSheets = useCallback(async () => {
-    setLoadingSheets(true);
-    try {
-      const sheets = await window.gueranger.listRecentSheets();
-      setAvailableSheets(sheets);
-      setShowSheetList(true);
-    } catch {
-      // Silently fail — user can retry
-    } finally {
-      setLoadingSheets(false);
-    }
-  }, []);
 
   const toggleColumn = useCallback((col: ExportableColumn) => {
     setSelectedColumns((prev) =>
@@ -134,14 +109,16 @@ export function ExportDialog({ open, onClose, selectedRows, searchQuery, onExpor
       return record;
     });
 
+    const columnLabels = selectedColumns.map((c) => getColumnLabel(c, t));
+
     onExport({
       rows,
       columns: [...selectedColumns],
-      sheetName,
-      existingSpreadsheetId: destination === "existing" && existingSheetId ? existingSheetId : undefined,
-      appendOrNewTab: destination === "existing" ? appendOrNewTab : undefined,
+      columnLabels,
+      sheetName: sheetName || "Results",
+      defaultFileName: sanitizeFileName(fileName),
     });
-  }, [selectedRows, selectedColumns, sheetName, destination, existingSheetId, appendOrNewTab, onExport]);
+  }, [selectedRows, selectedColumns, fileName, sheetName, onExport, t]);
 
   if (!open) return null;
 
@@ -153,7 +130,6 @@ export function ExportDialog({ open, onClose, selectedRows, searchQuery, onExpor
       }}
     >
       <div className="w-full max-w-md rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-xl">
-        {/* Header */}
         <div className="px-6 pt-6 pb-4">
           <h2 className="text-xl font-semibold text-slate-800 dark:text-slate-100">
             {t("export.dialogTitle")}
@@ -164,7 +140,21 @@ export function ExportDialog({ open, onClose, selectedRows, searchQuery, onExpor
         </div>
 
         <div className="px-6 space-y-4">
-          {/* Sheet name */}
+          <div>
+            <label className="block text-xs font-medium text-slate-600 dark:text-slate-400 mb-1">
+              {t("export.fileName")}
+            </label>
+            <input
+              type="text"
+              value={fileName}
+              onChange={(e) => setFileName(e.target.value)}
+              className="w-full rounded-md border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 px-3 py-2 text-sm text-slate-700 dark:text-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+            />
+            <p className="mt-1 text-xs text-slate-400 dark:text-slate-500">
+              {t("export.fileNameHint")}
+            </p>
+          </div>
+
           <div>
             <label className="block text-xs font-medium text-slate-600 dark:text-slate-400 mb-1">
               {t("export.sheetName")}
@@ -177,113 +167,6 @@ export function ExportDialog({ open, onClose, selectedRows, searchQuery, onExpor
             />
           </div>
 
-          {/* Destination */}
-          <div className="space-y-2">
-            <label className="flex items-center gap-2 cursor-pointer">
-              <input
-                type="radio"
-                name="destination"
-                checked={destination === "new"}
-                onChange={() => setDestination("new")}
-                className="h-4 w-4 accent-blue-600"
-              />
-              <span className="text-sm text-slate-700 dark:text-slate-300">
-                {t("export.newSpreadsheet")}
-              </span>
-            </label>
-            <label className="flex items-center gap-2 cursor-pointer">
-              <input
-                type="radio"
-                name="destination"
-                checked={destination === "existing"}
-                onChange={() => setDestination("existing")}
-                className="h-4 w-4 accent-blue-600"
-              />
-              <span className="text-sm text-slate-700 dark:text-slate-300">
-                {t("export.existingSpreadsheet")}
-              </span>
-            </label>
-
-            {/* Existing spreadsheet options */}
-            {destination === "existing" && (
-              <div className="ml-6 space-y-2">
-                {existingSheetName ? (
-                  <div className="flex items-center gap-2">
-                    <span className="text-sm text-slate-700 dark:text-slate-300 truncate">
-                      {existingSheetName}
-                    </span>
-                    <button
-                      onClick={handleBrowseSheets}
-                      className="text-sm text-blue-600 hover:underline dark:text-blue-400"
-                    >
-                      {t("export.browse")}
-                    </button>
-                  </div>
-                ) : (
-                  <button
-                    onClick={handleBrowseSheets}
-                    disabled={loadingSheets}
-                    className="text-sm text-blue-600 hover:underline dark:text-blue-400"
-                  >
-                    {loadingSheets ? "..." : t("export.browse")}
-                  </button>
-                )}
-
-                {showSheetList && availableSheets.length > 0 && (
-                  <div className="max-h-[120px] overflow-y-auto rounded-md border border-slate-200 dark:border-slate-600">
-                    {availableSheets.map((sheet) => (
-                      <button
-                        key={sheet.id}
-                        onClick={() => {
-                          setExistingSheetId(sheet.id);
-                          setExistingSheetName(sheet.name);
-                          setShowSheetList(false);
-                        }}
-                        className={`w-full text-left px-3 py-1.5 text-sm hover:bg-slate-50 dark:hover:bg-slate-700 ${
-                          existingSheetId === sheet.id
-                            ? "bg-blue-50 dark:bg-blue-950/50 text-blue-700 dark:text-blue-300"
-                            : "text-slate-700 dark:text-slate-300"
-                        }`}
-                      >
-                        {sheet.name}
-                      </button>
-                    ))}
-                  </div>
-                )}
-
-                {existingSheetId && (
-                  <div className="space-y-1">
-                    <label className="flex items-center gap-2 cursor-pointer">
-                      <input
-                        type="radio"
-                        name="appendMode"
-                        checked={appendOrNewTab === "append"}
-                        onChange={() => setAppendOrNewTab("append")}
-                        className="h-3.5 w-3.5 accent-blue-600"
-                      />
-                      <span className="text-xs text-slate-600 dark:text-slate-400">
-                        {t("export.appendRows")}
-                      </span>
-                    </label>
-                    <label className="flex items-center gap-2 cursor-pointer">
-                      <input
-                        type="radio"
-                        name="appendMode"
-                        checked={appendOrNewTab === "newTab"}
-                        onChange={() => setAppendOrNewTab("newTab")}
-                        className="h-3.5 w-3.5 accent-blue-600"
-                      />
-                      <span className="text-xs text-slate-600 dark:text-slate-400">
-                        {t("export.newTab")}
-                      </span>
-                    </label>
-                  </div>
-                )}
-              </div>
-            )}
-          </div>
-
-          {/* Column picker */}
           <div className="mt-4">
             <div className="flex items-center justify-between">
               <label className="text-xs font-medium text-slate-600 dark:text-slate-400">
@@ -316,7 +199,6 @@ export function ExportDialog({ open, onClose, selectedRows, searchQuery, onExpor
           </div>
         </div>
 
-        {/* Footer */}
         <div className="px-6 py-4 border-t border-slate-200 dark:border-slate-700 flex justify-end gap-3 mt-4">
           <button
             onClick={onClose}

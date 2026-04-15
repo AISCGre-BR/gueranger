@@ -1,20 +1,21 @@
 import { useTranslation } from "react-i18next";
-import { Loader2, CheckCircle, AlertCircle, X } from "lucide-react";
+import { Loader2, CheckCircle, AlertCircle, X, FolderOpen, FileSpreadsheet } from "lucide-react";
 
 interface Props {
   status: "idle" | "exporting" | "success" | "error";
-  url: string | null;
+  filePath: string | null;
   errorMessage: string | null;
   onRetry: () => void;
   onDismiss: () => void;
 }
 
-export function ExportToast({ status, url, errorMessage, onRetry, onDismiss }: Props) {
+export function ExportToast({ status, filePath, errorMessage, onRetry, onDismiss }: Props) {
+  const { t } = useTranslation();
   if (status === "idle") return null;
 
   return (
     <div
-      className="fixed bottom-4 right-4 z-50 min-w-[300px] rounded-lg border border-slate-200 bg-white shadow-lg dark:border-slate-700 dark:bg-slate-800 p-4"
+      className="fixed bottom-4 right-4 z-50 min-w-[320px] rounded-lg border border-slate-200 bg-white shadow-lg dark:border-slate-700 dark:bg-slate-800 p-4"
       role="status"
       aria-live="polite"
     >
@@ -30,7 +31,7 @@ export function ExportToast({ status, url, errorMessage, onRetry, onDismiss }: P
         <div className="flex items-center gap-2">
           <Loader2 className="h-4 w-4 animate-spin text-blue-600 dark:text-blue-400" />
           <span className="text-sm text-slate-700 dark:text-slate-300">
-            <ExportProgressText />
+            {t("export.progress")}
           </span>
         </div>
       )}
@@ -40,16 +41,26 @@ export function ExportToast({ status, url, errorMessage, onRetry, onDismiss }: P
           <div className="flex items-center gap-2">
             <CheckCircle className="h-4 w-4 text-green-600 dark:text-green-400" />
             <span className="text-sm text-slate-700 dark:text-slate-300">
-              <ExportSuccessText />
+              {t("export.success")}
             </span>
           </div>
-          {url && (
-            <button
-              onClick={() => window.gueranger.openExternal(url)}
-              className="text-sm text-blue-600 dark:text-blue-400 hover:underline"
-            >
-              <ExportOpenSheetText />
-            </button>
+          {filePath && (
+            <div className="flex gap-3 text-sm">
+              <button
+                onClick={() => window.gueranger.openExportFile(filePath)}
+                className="flex items-center gap-1 text-blue-600 dark:text-blue-400 hover:underline"
+              >
+                <FileSpreadsheet className="h-3.5 w-3.5" />
+                {t("export.openFile")}
+              </button>
+              <button
+                onClick={() => window.gueranger.revealExportInFolder(filePath)}
+                className="flex items-center gap-1 text-blue-600 dark:text-blue-400 hover:underline"
+              >
+                <FolderOpen className="h-3.5 w-3.5" />
+                {t("export.showInFolder")}
+              </button>
+            </div>
           )}
         </div>
       )}
@@ -59,43 +70,17 @@ export function ExportToast({ status, url, errorMessage, onRetry, onDismiss }: P
           <div className="flex items-center gap-2">
             <AlertCircle className="h-4 w-4 text-red-600 dark:text-red-400" />
             <span className="text-sm text-red-600 dark:text-red-400">
-              <ExportErrorText message={errorMessage} />
+              {t("export.error", { message: errorMessage ?? "Unknown error" })}
             </span>
           </div>
           <button
             onClick={onRetry}
             className="text-sm text-blue-600 dark:text-blue-400 hover:underline"
           >
-            <ExportRetryText />
+            {t("export.retry")}
           </button>
         </div>
       )}
     </div>
   );
-}
-
-// Inner components that use useTranslation to keep hooks at top level
-function ExportProgressText() {
-  const { t } = useTranslation();
-  return <>{t("export.progress")}</>;
-}
-
-function ExportSuccessText() {
-  const { t } = useTranslation();
-  return <>{t("export.success")}</>;
-}
-
-function ExportOpenSheetText() {
-  const { t } = useTranslation();
-  return <>{t("export.openSheet")}</>;
-}
-
-function ExportErrorText({ message }: { message: string | null }) {
-  const { t } = useTranslation();
-  return <>{t("export.error", { message: message ?? "Unknown error" })}</>;
-}
-
-function ExportRetryText() {
-  const { t } = useTranslation();
-  return <>{t("export.retry")}</>;
 }

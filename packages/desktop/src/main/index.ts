@@ -3,21 +3,11 @@ import { join } from "node:path";
 import { handleSearch } from "@gueranger/core";
 import { initializeTheme, registerSettingsHandlers } from "./settings";
 import {
-  startGoogleSignIn,
-  restoreSession,
-  signOut,
-  getAuthClient,
-} from "./auth/google-oauth";
-import {
   storeEncrypted,
   retrieveEncrypted,
   clearEncrypted,
 } from "./auth/safe-credentials";
-import {
-  exportToNewSheet,
-  exportToExistingSheet,
-  listRecentSpreadsheets,
-} from "./export/sheets-export";
+import { exportToExcel, revealInFolder, openFile } from "./export/excel-export";
 
 function createWindow(): void {
   const win = new BrowserWindow({
@@ -54,34 +44,7 @@ ipcMain.handle("shell:open-external", async (_event, url: string) => {
   await shell.openExternal(url);
 });
 
-function registerAuthHandlers(): void {
-  ipcMain.handle(
-    "auth:google-sign-in",
-    async (_event, rememberMe: boolean) => {
-      const result = await startGoogleSignIn();
-      if (rememberMe) {
-        try {
-          storeEncrypted("google-refresh-token", result.refreshToken);
-        } catch (err) {
-          console.warn("[auth] Could not persist token (secure storage unavailable):", err);
-        }
-      }
-      return { email: result.email, avatarUrl: result.avatarUrl };
-    },
-  );
-
-  ipcMain.handle("auth:google-sign-out", async () => {
-    await signOut();
-  });
-
-  ipcMain.handle("auth:google-get-status", async () => {
-    const session = await restoreSession();
-    if (session) {
-      return { signedIn: true, email: session.email, avatarUrl: session.avatarUrl };
-    }
-    return { signedIn: false };
-  });
-
+function registerDiammHandlers(): void {
   ipcMain.handle(
     "auth:diamm-save",
     async (_event, username: string, password: string) => {
@@ -105,54 +68,35 @@ function registerAuthHandlers(): void {
 
 function registerExportHandlers(): void {
   ipcMain.handle(
-    "export:to-sheets",
+    "export:to-excel",
     async (
-      _event,
+      event,
       params: {
         rows: Record<string, string>[];
         columns: string[];
+        columnLabels: string[];
         sheetName: string;
-        existingSpreadsheetId?: string;
-        appendOrNewTab?: "append" | "newTab";
+        defaultFileName: string;
       },
     ) => {
-      const auth = getAuthClient();
-      if (!auth) throw new Error("Not signed in");
-
-      const headers = params.columns;
-      const rowsData = params.rows.map((row) =>
-        params.columns.map((col) => row[col] ?? ""),
-      );
-
-      let url: string;
-      if (params.existingSpreadsheetId) {
-        url = await exportToExistingSheet(
-          auth,
-          params.existingSpreadsheetId,
-          params.appendOrNewTab ?? "newTab",
-          params.sheetName,
-          headers,
-          rowsData,
-        );
-      } else {
-        url = await exportToNewSheet(auth, params.sheetName, headers, rowsData);
-      }
-
-      return { url };
+      const parent = BrowserWindow.fromWebContents(event.sender) ?? undefined;
+      return exportToExcel(params, parent);
     },
   );
 
-  ipcMain.handle("export:list-sheets", async () => {
-    const auth = getAuthClient();
-    if (!auth) throw new Error("Not signed in");
-    return listRecentSpreadsheets(auth);
+  ipcMain.handle("export:reveal-in-folder", async (_event, filePath: string) => {
+    revealInFolder(filePath);
+  });
+
+  ipcMain.handle("export:open-file", async (_event, filePath: string) => {
+    return openFile(filePath);
   });
 }
 
 app.whenReady().then(() => {
   initializeTheme();
   registerSettingsHandlers();
-  registerAuthHandlers();
+  registerDiammHandlers();
   registerExportHandlers();
   createWindow();
 });

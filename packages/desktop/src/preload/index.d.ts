@@ -36,25 +36,21 @@ interface GuerangerAPI {
   markLaunched: () => Promise<void>;
   openExternal: (url: string) => Promise<void>;
 
-  // Auth
-  googleSignIn: (rememberMe: boolean) => Promise<{ email: string; avatarUrl: string }>;
-  googleSignOut: () => Promise<void>;
-  googleGetStatus: () => Promise<{ signedIn: boolean; email?: string; avatarUrl?: string }>;
-
   // DIAMM
   diammSave: (username: string, password: string) => Promise<void>;
   diammGet: () => Promise<{ username: string | null; password: string | null }>;
   diammClear: () => Promise<void>;
 
-  // Export
-  exportToSheets: (params: {
+  // Excel export
+  exportToExcel: (params: {
     rows: Record<string, string>[];
     columns: string[];
+    columnLabels: string[];
     sheetName: string;
-    existingSpreadsheetId?: string;
-    appendOrNewTab?: "append" | "newTab";
-  }) => Promise<{ url: string }>;
-  listRecentSheets: () => Promise<Array<{ id: string; name: string; modifiedTime: string }>>;
+    defaultFileName: string;
+  }) => Promise<{ filePath: string; canceled: boolean }>;
+  revealExportInFolder: (filePath: string) => Promise<void>;
+  openExportFile: (filePath: string) => Promise<string>;
 }
 
 declare global {
