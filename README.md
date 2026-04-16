@@ -1,7 +1,8 @@
 # Guéranger
 
+![Status](https://img.shields.io/badge/status-ALPHA-orange)
+![Version](https://img.shields.io/badge/version-0.0.2--alpha-lightgrey)
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](LICENSE)
-Versão: **0.0.2-alpha**
 
 Busca unificada de manuscritos digitalizados de canto gregoriano em múltiplas
 fontes acadêmicas. Distribuído como **app desktop** (Electron) e como
@@ -27,15 +28,15 @@ Normaliza os resultados heterogêneos em uma tabela única (siglum, biblioteca,
 século, fólio, link IIIF, URL da fonte, etc.) e exporta para **Excel
 (.xlsx)** localmente — sem upload para serviço externo nenhum.
 
-## Instalação
+## Downloads
 
-### App desktop
+Instaladores (Linux AppImage, Windows NSIS, macOS dmg x64/arm64) em
+[github.com/AISCGre-BR/gueranger/releases](https://github.com/AISCGre-BR/gueranger/releases).
 
-Baixe o instalador da plataforma em [Releases](../../releases) (quando
-disponível) ou rode direto do fonte:
+## Instalação a partir do fonte
 
 ```bash
-git clone https://github.com/htbg/gueranger.git
+git clone https://github.com/AISCGre-BR/gueranger.git
 cd gueranger
 npm install
 npm run dev:desktop
@@ -88,10 +89,10 @@ npm run inspect       # abre MCP inspector para debugar o servidor
 ## Aviso Legal / Disclaimer
 
 Este software é distribuído **NO ESTADO EM QUE SE ENCONTRA** (“AS IS”), sem
-garantia de qualquer tipo, expressa ou implícita. Em nenhuma hipótese o
-autor será responsável por qualquer dano decorrente do uso deste software —
-incluindo perda de dados, corrupção de arquivos, travamentos ou qualquer
-outro defeito.
+garantia de qualquer tipo, expressa ou implícita. Em nenhuma hipótese os
+autores serão responsáveis por qualquer dano decorrente do uso deste
+software — incluindo perda de dados, corrupção de arquivos, travamentos ou
+qualquer outro defeito.
 
 O Guéranger **não** é afiliado a nenhuma das bases de dados consultadas.
 Cada fonte permanece propriedade de sua instituição e é regida pelos seus
@@ -100,8 +101,16 @@ escolhidos para respeitar a infraestrutura acadêmica dessas bases.
 
 Cláusulas legais completas: seções 15 e 16 do arquivo [LICENSE](LICENSE).
 
+## Autores e desenvolvedores
+
+Projeto da **AISCGre Brasil** (Associação Internacional de Estudos de Canto
+Gregoriano — Seção Brasileira).
+
+Equipe de desenvolvimento:
+- **Gabriel HTB** — equipe de TI da AISCGre Brasil
+
 ## Licença
 
 [GNU General Public License v3.0 ou posterior](LICENSE).
 
-Copyright © 2026 Gabriel HTB.
+Copyright © 2026 AISCGre Brasil.

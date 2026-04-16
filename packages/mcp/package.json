@@ -1,7 +1,8 @@
 {
   "name": "@gueranger/mcp",
   "version": "0.0.2-alpha",
-  "author": "Gabriel HTB",
+  "author": "AISCGre Brasil",
+  "contributors": ["Gabriel HTB"],
   "license": "GPL-3.0-or-later",
   "type": "module",
   "bin": {

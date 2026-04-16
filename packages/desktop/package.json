@@ -2,7 +2,8 @@
   "name": "@gueranger/desktop",
   "version": "0.0.2-alpha",
   "description": "Desktop app for searching digitized Gregorian chant manuscripts",
-  "author": "Gabriel HTB",
+  "author": "AISCGre Brasil",
+  "contributors": ["Gabriel HTB"],
   "license": "GPL-3.0-or-later",
   "main": "./out/main/index.js",
   "scripts": {

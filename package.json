@@ -2,12 +2,15 @@
   "name": "gueranger",
   "version": "0.0.2-alpha",
   "description": "Unified search for digitized Gregorian chant manuscripts across academic databases — MCP server + desktop app",
-  "author": "Gabriel HTB",
+  "author": "AISCGre Brasil",
+  "contributors": ["Gabriel HTB"],
   "license": "GPL-3.0-or-later",
+  "homepage": "https://github.com/AISCGre-BR/gueranger",
   "repository": {
     "type": "git",
-    "url": "https://github.com/htbg/gueranger.git"
+    "url": "https://github.com/AISCGre-BR/gueranger.git"
   },
+  "bugs": "https://github.com/AISCGre-BR/gueranger/issues",
   "private": true,
   "workspaces": ["packages/*"],
   "scripts": {
